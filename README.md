@@ -3,9 +3,15 @@
 ## Summary of Analysis
 * Predict gene expression for Ac tissue using PrediXcan
 * Predict height, bmi using predicted expression and PTRS weights
-* [Compute correlations between predicted and observed traits for each PTRS model](docs/Plot_Correlations.html)
+* [Compute correlations between predicted and observed traits for each PTRS model](analysis/Plot_Correlations.Rmd)
+
+## Setup 
+* Git clone [MetaXcan](https://github.com/hakyimlab/MetaXcan)
+* Create [conda](https://github.com/hakyimlab/MetaXcan/blob/master/README.md#example-conda-environment-setup) environment: 
+* [Mount Box drive](https://support.box.com/hc/en-us/articles/360043697474-Installing-and-Updating-Box-Drive)
 
 ## PrediXcan
+
 ![](docs/PrediXcan.png)
 
 Individual level PrediXcan takes a genotype file and prediction model to compute predicted gene expression. For our analysis, we use prediction models trained with elasticnet methods on rat genotype and transcriptome data. The models are in Box:`imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql`. We use processed genotypes in text format:`imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/data/rat_genotypes_LD_pruned_0.95`.
