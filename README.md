@@ -3,7 +3,7 @@
 ## Summary of Analysis
 * Predict gene expression for Ac tissue using PrediXcan
 * Predict height, bmi using predicted expression and PTRS weights
-* [Compute correlations between predicted and observed traits for each PTRS model](analysis/Plot_Correlations.Rmd)
+* [Compute correlations between predicted and observed traits for each PTRS model](docs/Plot_Correlations.html)
 
 ## PrediXcan
 ![](docs/PrediXcan.png)
