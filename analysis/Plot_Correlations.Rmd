@@ -1,0 +1,172 @@
+---
+title: "Plot_Correlations"
+author: "sabrina-mi"
+date: "2022-07-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Setup
+
+```{r setup}
+library(tidyverse)
+library(data.table)
+library(RSQLite)
+"%&%" = function(a,b) paste(a,b,sep="")
+devtools::source_gist("ee5f67abddd0b761ee24410ea71c41aa")
+devtools::source_gist("38431b74c6c0bf90c12f")
+devtools::source_gist("1e9053c8f35c30396429350a08f33ea7")
+
+data.dir <- "/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/data/"
+```
+
+
+```{r input}
+traits <- c("height")
+
+```
+
+
+# Human PTRS Results
+
+The Personal Genome Project is a public resource of individual data from informed volunteers. PGP [genetic data](https://uchicago.box.com/s/7b9k6ilrx3fg6fq2l00tnej1edmk91r5) is publicly available, and we have processed trait information in an [sqlite database](https://uchicago.box.com/s/351lx8irgiouks3tnl8uoqh4bw8wpt6n). In Yanyu Liang's development of PTRS, she generated PTRS weights using elastic net.
+We want to use PGP data to test Yanyu's PTRS weights and compare to observed height. We previously generated predicted expression in Summary_PTRS_PGS.Rmd
+
+## Calculate Predicted Height in PGP using Individual PTRS Weights
+
+```{r read expression}
+pred_expr <- read_tsv(data.dir %&% "PTRS_weights/PGP/PGP_Whole_Blood__predict.txt") %>% select(-c(FID))
+```
+
+We repeat the same method from before for predicting traits, but this time predicting height and BMI for PGP individuals.
+
+
+## Compare Performance to Observed Height in Personal Genomes
+
+First, we load PGP phenotype data, stored in an sqlite database.
+
+
+```{r collect all data for corr, eval=FALSE}
+fn_pgp_trait = function(trait)
+{
+  weights <- read_tsv(data.dir %&% "PTRS_weights/weight_files/elastic_net_alpha_0.1_British.export_model/weights." %&% trait %&% ".tsv.gz") %>% rename(gene_name = gene_id)
+  # load phenotype data
+  db <- "~/Box/imlab-data/data-Github/web-data/2021-04-21-personal-genomes-project-data/repgp-data.sqlite3"
+  sqlite.driver <- dbDriver("SQLite")
+  conn <- dbConnect(RSQLite::SQLite(), db)
+  dbListTables(conn)
+  users <- dbGetQuery(conn, 'select * from users')
+  dbDisconnect(conn)
+  pheno <- users  %>% select(c(sample, trait)) %>% na.omit()
+  n_genes = as.matrix(apply(weights[,2:ncol(weights)], 2, function(x) sum(x != 0 )))
+  pred_trait <- fn_generate_trait(pred_expr, weights)
+  pheno <- pheno[na.omit(match(rownames(pred_trait), pheno$sample)),]
+  return(list("pheno"= pheno, "pred_trait" = pred_trait, "n_genes" = n_genes))
+}
+
+```
+
+# Compute Correlations
+
+The following function takes predicted and observed individual data and computes correlation. The `fn_generate_trait` function uses PTRS weights to calculate predicted expression with several models, each using a different selection of genes. We pass in the `n_genes` dataframe to index the predicted expression, and so that we can evaluate the performance of each model in our plot.
+
+```{r generate corr df}
+fn_corr = function(pheno, pred_trait, n_genes, RDS){
+  trait_df <- data.frame(estimate = numeric(), pvalue = numeric(), model = character(), n_genes_in_model = numeric(), conf.int.min = numeric(), conf.int.max = numeric())
+  tempo <- pred_trait[na.omit(match(pheno[,1], rownames(pred_trait))), ]
+  for(i in 1:ncol(tempo)){
+    cor = cor.test(pheno[,2], tempo[,i])
+    trait_df[i,1] <- cor$estimate
+    trait_df[i,2] <- cor$p.value
+    trait_df[i,3] <- paste("model", i, sep = "_")
+    trait_df[i,4] <- n_genes[i,1]
+    trait_df[i,5] <- cor$conf.int[1]
+    trait_df[i,6] <- cor$conf.int[2]
+    saveRDS(trait_df, RDS)
+  }
+  return(trait_df)
+} 
+  
+```
+
+The fn_corr function is generic enough to generate a plot for any type of phenotype data, so we reuse it for human and rat data. However, the way we store (and extract) data from humans is different from rats. Here, we show how to wrangle PGP data into the correct form for the fn_corr function.
+
+```{r PGP corr, eval=FALSE}
+
+for (trait in traits){
+  dfs <- fn_pgp_trait(trait)
+  pheno <- dfs$pheno
+  pred_trait <- dfs$pred_trait
+  n_genes <- dfs$n_genes
+  RDS <- data.dir %&% "corr_" %&% trait %&% "_indiv_PTRS.RDS"
+  trait_df <- fn_corr(pheno,pred_trait,n_genes,RDS)
+}
+
+```
+
+# Plot Performance
+
+We wrap the ggplot code in a function, fn_corr_plot
+
+```{r plot corr matrix}
+fn_corr_plot = function(file,title){
+  trait_df <- readRDS(data.dir %&% file)
+  p1 = ggplot(trait_df, aes(n_genes_in_model, estimate)) + geom_errorbar(aes(ymin = conf.int.min, ymax = conf.int.max ), width=0.2,  color="gray") + geom_point(color = "purple", position="jitter") + geom_line(color = "purple")   + xlab("Number of genes in each model") + ylab("Correlation Coefficient (r)") + ggtitle(title) + theme_bw()
+  return(p1)
+}
+
+```
+
+For example, we plot the correlations between observed and predicted height for each of the models.
+
+```{r height plot}
+fn_corr_plot("corr_height_indiv_PTRS.RDS", "Performance of PTRS for Height in PGP")
+```
+
+## Rat PTRS Results
+
+We can also replicate the pipeline for rat data from Abe Palmer's lab. For each trait, we modify the phenotype file to fit fn_corr function. Then we can run fn_corr with the predicted traits table generated from previous analysis. We 
+
+```{r modify phenotypes}
+pheno_file <- read.csv(data.dir %&% "expression/processed_obesity_rat_Palmer_phenotypes.csv")
+
+```
+
+Recall the PTRS weights we used to predict rat traits were trained on human data. We proposed that PTRS's portability across ethnicities would carry over to other species. We tested when we ran human PTRS for height on predicted rat transcriptomes to estimate body length, an analogue for height. Below, we specify which columns to select in the rat phenotype file.
+
+```{r traits analogue}
+traits <- c("height", "bmi")
+rat_analogue <- c("bodylength_w_tail", "bmi_bodylength_w_tail")
+names(rat_analogue) <- traits
+
+```
+
+The following block wrangles our data before computing correlations.
+
+```{r wrangle corr input data, eval=FALSE}
+for (trait in traits) {
+  # data wrangling
+  pheno <- pheno_file %>% dplyr::select(c(rat_rfid, rat_analogue[[trait]])) %>% na.omit()
+  weights <- read_tsv(data.dir %&% "PTRS_weights/weight_files/elastic_net_alpha_0.1_British.export_model/weights." %&% trait %&% ".tsv.gz") %>% rename(gene_name = gene_id)
+  n_genes = as.matrix(apply(weights[,2:ncol(weights)], 2, function(x) sum(x != 0 )))
+  # corr inputs
+  n_genes <- n_genes[-1, , drop = FALSE]
+  pred_trait <- readRDS(data.dir %&% "rat_pred_" %&% trait %&% "_w_Human_best_PTRS.RDS")[,-1]
+  pheno <- pheno[na.omit(match(rownames(pred_trait), pheno$rat_rfid)),]
+  RDS <- data.dir %&% "corr_" %&% rat_analogue[[trait]] %&% "_rat_PTRS.RDS"
+  # output dataframe for plot
+  trait_df <- fn_corr(pheno, pred_trait, n_genes, RDS)
+}
+
+```
+
+Now we can copy the ggplot code above, replacing with the body length correlation dataframe.
+
+```{r}
+fn_corr_plot("corr_bodylength_w_tail_rat_PTRS.RDS", "Performance of PTRS for Rat Bodylength")
+
+```
+
+
+
