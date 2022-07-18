@@ -364,7 +364,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -375,8 +375,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -389,9 +389,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>RatXcan_Training/</code> <span
@@ -414,21 +414,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -519,15 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree97b4b7f37572e750da0b7eb68c6e526c9b17515ctargetblank97b4b7fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtreed2d48bccdd6978f9aa6d02babba174bc8405c0f9targetblankd2d48bca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/97b4b7f37572e750da0b7eb68c6e526c9b17515c" target="_blank">97b4b7f</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/d2d48bccdd6978f9aa6d02babba174bc8405c0f9" target="_blank">d2d48bc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree97b4b7f37572e750da0b7eb68c6e526c9b17515ctargetblank97b4b7fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtreed2d48bccdd6978f9aa6d02babba174bc8405c0f9targetblankd2d48bca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +534,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/97b4b7f37572e750da0b7eb68c6e526c9b17515c" target="_blank">97b4b7f</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/d2d48bccdd6978f9aa6d02babba174bc8405c0f9" target="_blank">d2d48bc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -552,12 +549,14 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
 Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
-    Untracked:  analysis/Plot_Correlations.Rmd
+    Untracked:  README.html
+    Untracked:  rsconnect/
 
 </code></pre>
 <p>
@@ -572,10 +571,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Plot_Correlations.Rmd</code>) and
+HTML (<code>docs/Plot_Correlations.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/2610bc6ff3332e628f1d7665fcd3886cf2ccb6a8/analysis/Plot_Correlations.Rmd" target="_blank">2610bc6</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-07-18
+</td>
+<td>
+html for plot correlations
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/2610bc6ff3332e628f1d7665fcd3886cf2ccb6a8/docs/Plot_Correlations.html" target="_blank">2610bc6</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-07-18
+</td>
+<td>
+html for plot correlations
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -603,11 +666,6 @@ Attaching package: &#39;data.table&#39;</code></pre>
 <pre class="r"><code>library(RSQLite)
 &quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
 devtools::source_gist(&quot;ee5f67abddd0b761ee24410ea71c41aa&quot;)</code></pre>
-<pre><code>Warning: Can&#39;t find generic `testthat_print` in package testthat to register S3 method.
-Can&#39;t find generic `testthat_print` in package testthat to register S3 method.
-Can&#39;t find generic `testthat_print` in package testthat to register S3 method.
-ℹ This message is only shown to developers using devtools.
-ℹ Do you need to update testthat to the latest version?</code></pre>
 <pre><code>Sourcing https://gist.githubusercontent.com/natashasanthanam/ee5f67abddd0b761ee24410ea71c41aa/raw/185ab37e5a31f1d3bab1530e468950e30ff31337/fn_generate_trait.R</code></pre>
 <pre><code>SHA-1 hash of file is c56941964697a118c351c3f81322a221fa13a1b3</code></pre>
 <pre class="r"><code>devtools::source_gist(&quot;38431b74c6c0bf90c12f&quot;)</code></pre>
@@ -718,6 +776,43 @@ fn_corr function.</p>
 height for each of the models.</p>
 <pre class="r"><code>fn_corr_plot(&quot;corr_height_indiv_PTRS.RDS&quot;, &quot;Performance of PTRS for Height in PGP&quot;)</code></pre>
 <p><img src="figure/Plot_Correlations.Rmd/height%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-height-plot-1">
+Past versions of "height plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-height-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/2610bc6ff3332e628f1d7665fcd3886cf2ccb6a8/docs/figure/Plot_Correlations.Rmd/height plot-1.png" target="_blank">2610bc6</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-07-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="rat-ptrs-results" class="section level2">
 <h2>Rat PTRS Results</h2>
 <p>We can also replicate the pipeline for rat data from Abe Palmer’s
@@ -753,6 +848,43 @@ correlations.</p>
 correlation dataframe.</p>
 <pre class="r"><code>fn_corr_plot(&quot;corr_bodylength_w_tail_rat_PTRS.RDS&quot;, &quot;Performance of PTRS for Rat Bodylength&quot;)</code></pre>
 <p><img src="figure/Plot_Correlations.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/2610bc6ff3332e628f1d7665fcd3886cf2ccb6a8/docs/figure/Plot_Correlations.Rmd/unnamed-chunk-1-1.png" target="_blank">2610bc6</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-07-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -789,19 +921,19 @@ loaded via a namespace (and not attached):
 [17] glue_1.6.2        digest_0.6.27     promises_1.1.1    rvest_0.3.6      
 [21] colorspace_1.4-1  htmltools_0.5.2   httpuv_1.5.4      pkgconfig_2.0.3  
 [25] devtools_2.3.2    broom_0.8.0       haven_2.3.1       scales_1.1.1     
-[29] processx_3.4.4    later_1.1.0.1     git2r_0.27.1      farver_2.0.3     
-[33] generics_0.0.2    usethis_1.6.3     ellipsis_0.3.2    withr_2.3.0      
-[37] cli_3.3.0         magrittr_1.5      crayon_1.3.4      readxl_1.3.1     
-[41] memoise_1.1.0     evaluate_0.15     ps_1.4.0          fs_1.5.0         
-[45] xml2_1.3.2        pkgbuild_1.1.0    tools_4.0.3       prettyunits_1.1.1
-[49] hms_0.5.3         lifecycle_0.2.0   munsell_0.5.0     reprex_0.3.0     
-[53] callr_3.5.1       compiler_4.0.3    jquerylib_0.1.4   rlang_1.0.2      
-[57] grid_4.0.3        rstudioapi_0.11   labeling_0.4.2    rmarkdown_2.14   
-[61] testthat_2.3.2    gtable_0.3.0      curl_4.3          DBI_1.1.0        
-[65] R6_2.4.1          lubridate_1.7.9   knitr_1.39        fastmap_1.1.0    
-[69] bit_4.0.4         workflowr_1.6.2   rprojroot_1.3-2   desc_1.2.0       
-[73] stringi_1.5.3     Rcpp_1.0.8.3      vctrs_0.4.1       dbplyr_1.4.4     
-[77] tidyselect_1.1.0  xfun_0.31        </code></pre>
+[29] processx_3.4.4    whisker_0.4       later_1.1.0.1     git2r_0.27.1     
+[33] farver_2.0.3      generics_0.0.2    usethis_1.6.3     ellipsis_0.3.2   
+[37] withr_2.3.0       cli_3.3.0         magrittr_1.5      crayon_1.3.4     
+[41] readxl_1.3.1      memoise_1.1.0     evaluate_0.15     ps_1.4.0         
+[45] fs_1.5.0          xml2_1.3.2        pkgbuild_1.1.0    tools_4.0.3      
+[49] prettyunits_1.1.1 hms_0.5.3         lifecycle_0.2.0   munsell_0.5.0    
+[53] reprex_0.3.0      callr_3.5.1       compiler_4.0.3    jquerylib_0.1.4  
+[57] rlang_1.0.2       grid_4.0.3        rstudioapi_0.11   labeling_0.4.2   
+[61] rmarkdown_2.14    testthat_2.3.2    gtable_0.3.0      curl_4.3         
+[65] DBI_1.1.0         R6_2.4.1          lubridate_1.7.9   knitr_1.39       
+[69] fastmap_1.1.0     bit_4.0.4         workflowr_1.6.2   rprojroot_1.3-2  
+[73] desc_1.2.0        stringi_1.5.3     Rcpp_1.0.8.3      vctrs_0.4.1      
+[77] dbplyr_1.4.4      tidyselect_1.1.0  xfun_0.31        </code></pre>
 </div>
 </div>
 </div>
