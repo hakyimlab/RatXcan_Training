@@ -8,7 +8,7 @@
 ## Setup 
 * Git clone [MetaXcan](https://github.com/hakyimlab/MetaXcan)
 * Create [conda environment](https://github.com/hakyimlab/MetaXcan/blob/master/README.md#example-conda-environment-setup) 
-* Mount Box drive: [https://support.box.com/hc/en-us/articles/360043697474-Installing-and-Updating-Box-Drive](https://support.box.com/hc/en-us/articles/360043697474-Installing-and-Updating-Box-Drive)
+* [Mount Box drive](https://support.box.com/hc/en-us/articles/360043697474-Installing-and-Updating-Box-Drive)
 
 ## PrediXcan
 
