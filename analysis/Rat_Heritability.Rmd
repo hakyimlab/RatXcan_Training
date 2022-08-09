@@ -1,0 +1,108 @@
+---
+title: "Rat_Heritability"
+author: "sabrina-mi"
+date: "2022-08-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+GEMMA generates heritability and predictability values for a given phenotype. In our analysis, we use gene expression values in place of a phenotype to estimate the heritability. It takes genotype, gene expression, and an estimated relatedness matrix as input.
+
+## Format Genotype Data
+
+```{r format genotypes}
+library(tidyverse)
+load("/Users/sabrinami/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData")
+
+bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
+bimfile <- bim.dir %&% "Ac_bimbam"
+
+geno_Ac = geno[,match(colnames(gexAc)[-1], colnames(geno))]
+snps <- paste(phyMap$Chr, phyMap$Pos, phyMap$Ref, phyMap$Alt, sep = "_")
+Ac_bimbam <- cbind(phyMap$Chr, phyMap$Pos, snps, phyMap$Ref, phyMap$Alt, geno_Ac)
+write.table(Ac_bimbam, file = bimfile,quote=F,col.names=F,row.names=F)
+
+```
+
+## Generate GRMs
+
+
+```{bash, eval=FALSE}
+Rscript Generate_GRMs.R
+
+```
+
+## Run BSLMM
+
+We use Alvaro's Badger scripts submit a batch of jobs in parallel on CRI.
+
+```{bash, eval=FALSE}
+cd /gpfs/data/im-lab/nas40t2/Github/badger
+/gpfs/data/im-lab/nas40t2/lab_software/miniconda/envs/ukb_env/bin/python src/badger.py \
+-yaml_configuration_file /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code/GEMMA_submission.yaml \
+-parsimony 9
+
+```
+
+## Read Heritability and Sparsity Estimates
+
+```{r}
+```{r, eval=FALSE}
+ge.dir <- "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/output"
+files <- list.files(path = ge.dir, pattern = ".hyp.txt", full.names = TRUE)
+```
+
+```{r, eval=FALSE}
+PVE_df <- as.data.frame(matrix(NA, 0, 4)) 
+
+for(i in 1:length(files)){
+  gene <- substr(sapply(strsplit(files[i],"/"), `[`, 11), 8, 25)
+  df <- read_tsv(files[i])
+  
+  q1 <- quantile(df$pve, 0.1)
+  q2 <- quantile(df$pve, 0.9)
+  quantile1=list(p=.1 ,x=q1)
+  quantile2=list(p=.9, x=q2)
+  if(quantile1$x != quantile2$x) {
+  prior <- beta.select(quantile1, quantile2)
+  credible_set <- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+  
+  PVE_df[i, 1] <- gene
+  PVE_df[i, 2] <- qbeta(0.5, prior[1],  prior[2])
+  PVE_df[i, 3] <- credible_set[1]
+  PVE_df[i, 4] <- credible_set[2]
+  }
+  else 
+    i = i+1
+}
+
+write_tsv(PVE_df, "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PVE_estimates.txt", col_names = FALSE )
+
+PGE_df <- as.data.frame(matrix(NA, 0, 4))
+for(i in 1:length(files)){
+  gene <- substr(sapply(strsplit(files[i],"/"), `[`, 11), 8, 25)
+  df <- read_tsv(files[i])
+  
+  q1 <- quantile(df$pge, 0.5)
+  q2 <- quantile(df$pge, 0.9)
+  quantile1=list(p=.5 ,x=q1)
+  quantile2=list(p=.9, x=q2)
+  if(quantile1$x != quantile2$x) {
+  prior <- beta.select(quantile1, quantile2)
+  credible_set <- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+  
+  PGE_df[i, 1] <- gene
+  PGE_df[i, 2] <- qbeta(0.5, prior[1],  prior[2])
+  PGE_df[i, 3] <- credible_set[1]
+  PGE_df[i, 4] <- credible_set[2]
+  }
+  else 
+    i = i+1
+}
+
+write_tsv(PGE_df, "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PGE_estimates.txt", col_names = FALSE )
+```
+
+
+```
