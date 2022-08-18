@@ -11,9 +11,12 @@ GEMMA generates heritability and predictability values for a given phenotype. In
 
 ## Format Genotype Data
 
-```{r format genotypes}
+The "bimbam" file we are writing does not exactly follow the BIMBAM mean genotype file format, but it contains all the necessary information to create subseted BIMBAM files for estimating the genetic relatedness matrix (GRM).
+```{r format genotypes, eval=FALSE}
 library(tidyverse)
-load("/Users/sabrinami/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData")
+"%&%" = function(a,b) paste(a,b,sep="")
+
+load("~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData")
 
 bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
 bimfile <- bim.dir %&% "Ac_bimbam"
@@ -27,15 +30,50 @@ write.table(Ac_bimbam, file = bimfile,quote=F,col.names=F,row.names=F)
 
 ## Generate GRMs
 
+For each gene, we subset the initial "bimbam" file to cis eQTL variants for the genotype input and use gene expression values for the phenotype input. The output is a GRM estimating relatedness between the rats. BSLMM takes the GRM as input to control for individaul relatedness in association tests between genetic variance and gene expression.
+
+```{r run gemma, eval=FALSE}
+pheno.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/phenotype_files/"
+ge.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/genotype_files/"
+grm.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output/"
+bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
+#Read in bimbam file
+bimfile <- bim.dir %&% "Ac_bimbam" ###get SNP position information###
+
+bim <- read.table(bimfile)
+ensidlist <- gexAc$EnsemblGeneID
+setwd("/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/")
+for(i in 1:length(ensidlist)){
+  cat(i,"/",length(ensidlist),"\n")
+  gene <- ensidlist[i]
+  geneinfo <- gtf[match(gene, gtf$Gene),]
+  chr <- geneinfo[1]
+  c <- chr$Chr
+  start <- geneinfo$Start - 1e6 ### 1Mb lower bound for cis-eQTLS
+  end <- geneinfo$End + 1e6 ### 1Mb upper bound for cis-eQTLs
+  chrsnps <- subset(bim, bim[,1]==c) ### pull snps on same chr
+  cissnps <- subset(chrsnps,chrsnps[,2]>=start & chrsnps[,2]<=end) ### pull cis-SNP info
+  snplist <- cissnps[,3:ncol(cissnps)]
+  write.table(snplist, file= ge.dir %&% "tmp.Ac.geno" %&% gene, quote=F,col.names=F,row.names=F)
+  geneexp <- cbind(as.numeric(gexAc[i,-1]))
+  write.table(geneexp, file= pheno.dir %&% "tmp.pheno." %&% gene, col.names=F, row.names = F, quote=F) #output pheno for gemma
+  runGEMMAgrm <- "gemma -g " %&%  ge.dir %&% "tmp.Ac.geno" %&% gene %&% " -p " %&% pheno.dir %&% "tmp.pheno." %&%  gene  %&%  " -gk -o /grm_Ac_" %&% gene
+  system(runGEMMAgrm)
+
+}
+
+```
+
+GEMMA creates a new folder, `output`, in the working directory the GRMs. They should have file extension `cXX.txt`. When we run BSLMM, GEMMA writes to the same `output` folder, so we rename to separate the two.
 
 ```{bash, eval=FALSE}
-Rscript Generate_GRMs.R
-
+mv /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/GRMs
 ```
 
 ## Run BSLMM
 
-We use Alvaro's Badger scripts submit a batch of jobs in parallel on CRI.
+Running BSLMM is more computationally expensive than estimating GRMs, but parallelizable if we run it in CRI. 
+We use Alvaro's [Badger script](https://github.com/hakyimlab/badger) to create a PBS batch job for each gene.
 
 ```{bash, eval=FALSE}
 cd /gpfs/data/im-lab/nas40t2/Github/badger
@@ -45,20 +83,58 @@ cd /gpfs/data/im-lab/nas40t2/Github/badger
 
 ```
 
+There should be a folder `/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/jobs` that contains all the job scripts. CRI has a job limit of 10,000, but we have about 15,000 genes. We can work around it by repeating the chunk below.
+
+```{bash, eval=FALSE}
+cd /gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+for job in jobs/gemma*; do
+if  (($(qstat | wc -l) > 10000)); then
+break
+else
+qsub $job
+mv $job completed_jobs/
+fi
+done
+```
+
 ## Read Heritability and Sparsity Estimates
 
+GEMMA creates
+
+The BSLMM output is a table with columns: `h`, `pve`, `rho`, `pge`, `pi`, `n_gamma`. PVE is the proportion variance explained by causal variants and PGE is the proportion of genetic variance explained by sparse effects. We interpret them as estimates for heritability and sparsity, respectively.
+
+For some bizarre reason, the output table contains an extra tab at the end of each row, so we need to trim it in order for R to be able to parse it. We use a simple shell script, [`/gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code/remove_trailing_tab.sh`](code/remove_trailing_tab.sh).
+
+```{bash, eval=FALSE}
+cd /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+chmod +x remove_trailing_tab.sh
+DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+mkdir $DIR/hyp
+for file in $DIR/output/*.hyp.txt; do
+  ./remove_trailing_tab.sh $file
+done
+
+```
+
+Now we should have a new directory, `hyp`, that contains all of the `.hyp.txt` files in the correct format.
+
 ```{r}
-```{r, eval=FALSE}
-ge.dir <- "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/output"
+ge.dir <- "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/hyp"
 files <- list.files(path = ge.dir, pattern = ".hyp.txt", full.names = TRUE)
 ```
 
-```{r, eval=FALSE}
+Each gene results in whole columns of PVE values, so we summarize the distribution in a new dataframe. (BSLMM employs the Metropolis-Hastings algorithm, a way to estimate the probability distributions of PVE and PGE given the observed data. Under a very, very loose interpretation, BSLMM simulates different values of the parameters, computes the probability they result in our observed data, and repeats until it settles on the most likely sampled value of the parameters. Each row in the `.hyp.txt` file represents an iteration of the M-H algorithm.)
+
+
+```{r pve estimates, eval=FALSE}
+library(stringr)
+library(LearnBayes)
+
 PVE_df <- as.data.frame(matrix(NA, 0, 4)) 
 
 for(i in 1:length(files)){
-  gene <- substr(sapply(strsplit(files[i],"/"), `[`, 11), 8, 25)
-  df <- read_tsv(files[i])
+  gene <- str_extract(files[i], "ENSRNOG([\\d]+)")
+  df <- read.delim(files[i])
   
   q1 <- quantile(df$pve, 0.1)
   q2 <- quantile(df$pve, 0.9)
@@ -79,10 +155,17 @@ for(i in 1:length(files)){
 
 write_tsv(PVE_df, "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PVE_estimates.txt", col_names = FALSE )
 
+
+```
+
+And repeat for PGE.
+
+```{r pge estimates, eval=FALSE}
+
 PGE_df <- as.data.frame(matrix(NA, 0, 4))
 for(i in 1:length(files)){
-  gene <- substr(sapply(strsplit(files[i],"/"), `[`, 11), 8, 25)
-  df <- read_tsv(files[i])
+  gene <- str_extract(files[i], "ENSRNOG([\\d]+)")
+  df <- read.delim(files[i])
   
   q1 <- quantile(df$pge, 0.5)
   q2 <- quantile(df$pge, 0.9)
@@ -105,4 +188,3 @@ write_tsv(PGE_df, "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PGE_e
 ```
 
 
-```
