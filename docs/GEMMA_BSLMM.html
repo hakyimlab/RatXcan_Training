@@ -364,7 +364,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -375,8 +375,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -389,9 +389,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>RatXcan_Training/</code> <span
@@ -414,21 +414,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -519,15 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree2b4373af6417aab73ea699406abbd751e5ac1b7ftargetblank2b4373aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree362ebdeb9b327915a4688cea605218346306f767targetblank362ebdea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/2b4373af6417aab73ea699406abbd751e5ac1b7f" target="_blank">2b4373a</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/362ebdeb9b327915a4688cea605218346306f767" target="_blank">362ebde</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree2b4373af6417aab73ea699406abbd751e5ac1b7ftargetblank2b4373aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree362ebdeb9b327915a4688cea605218346306f767targetblank362ebdea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +534,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/2b4373af6417aab73ea699406abbd751e5ac1b7f" target="_blank">2b4373a</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/362ebdeb9b327915a4688cea605218346306f767" target="_blank">362ebde</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,16 +557,11 @@ Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
     Untracked:  README.html
-    Untracked:  code/.DS_Store
     Untracked:  rsconnect/
 
 Unstaged changes:
-    Modified:   analysis/GEMMA_BSLMM.Rmd
-    Modified:   analysis/index.Rmd
+    Modified:   code/.DS_Store
     Deleted:    output/README.md
-
-Staged changes:
-    Deleted:    code/Generate_GRMs.R
 
 </code></pre>
 <p>
@@ -615,6 +607,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/362ebdeb9b327915a4688cea605218346306f767/analysis/GEMMA_BSLMM.Rmd" target="_blank">362ebde</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-19
+</td>
+<td>
+add comments
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/a04720a1846f1f7ba0bfb0790824b0941eaab704/analysis/GEMMA_BSLMM.Rmd" target="_blank">a04720a</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-19
+</td>
+<td>
+add links to website
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/a04720a1846f1f7ba0bfb0790824b0941eaab704/docs/GEMMA_BSLMM.html" target="_blank">a04720a</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-19
+</td>
+<td>
+add links to website
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -686,7 +729,6 @@ tissues = c(&quot;Ac&quot;, &quot;Il&quot;, &quot;Lh&quot;, &quot;Pl&quot;, &quo
 
 # Create new directory for GEMMA inputs and outputs
 base.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/&quot;
-
 # path to write bimbam files
 bim.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/&quot;</code></pre>
 <div id="format-genotype-data" class="section level2">
@@ -761,7 +803,8 @@ fn_run_gemma_grm(&quot;Vo&quot;)</code></pre>
 directory the GRMs. They should have file extension
 <code>cXX.txt</code>. When we run BSLMM, GEMMA writes to the same
 <code>output</code> folder, so we rename to separate the two.</p>
-<pre class="bash"><code>mv /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/GRMs</code></pre>
+<pre class="bash"><code>DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+mv $DIR/output $DIR/GRMs</code></pre>
 </div>
 <div id="run-bslmm" class="section level2">
 <h2>Run BSLMM</h2>
@@ -769,9 +812,23 @@ directory the GRMs. They should have file extension
 but parallelizable if we run it in CRI. We use Alvaro’s <a
 href="https://github.com/hakyimlab/badger">Badger script</a> to create a
 PBS batch job for each gene.</p>
-<pre class="bash"><code>cd /gpfs/data/im-lab/nas40t2/Github/badger
+<p>I put all the bash commands for submitting BSLMM jobs into a shell
+script:</p>
+<pre class="bash"><code>cd gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+chmod +x Ac_GEMMA_BSLMM.sh
+chmod +x Il_GEMMA_BSLMM.sh
+chmod +x Lh_GEMMA_BSLMM.sh
+chmod +x Pl_GEMMA_BSLMM.sh
+chmod +x Vo_GEMMA_BSLMM.sh
+
+./Ac_GEMMA_BSLMM.sh</code></pre>
+<p>Because of the CRI job limit, I waited for all the jobs to clear
+before repeating for the next tissue.</p>
+<p>The details of the scripts are documented below:</p>
+<pre class="bash"><code>DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+cd /gpfs/data/im-lab/nas40t2/Github/badger
 /gpfs/data/im-lab/nas40t2/lab_software/miniconda/envs/ukb_env/bin/python src/badger.py \
--yaml_configuration_file /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code/GEMMA_submission.yaml \
+-yaml_configuration_file $DIR/GEMMA_submission.yaml \
 -parsimony 9
 </code></pre>
 <p>There should be a folder
@@ -779,7 +836,7 @@ PBS batch job for each gene.</p>
 that contains all the job scripts. CRI has a job limit of 10,000, but we
 have about 15,000 genes. We can work around it by repeating the chunk
 below.</p>
-<pre class="bash"><code>cd /gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+<pre class="bash"><code>cd $DIR
 for job in jobs/gemma*; do
 if  (($(qstat | wc -l) &gt; 10000)); then
 break
@@ -802,7 +859,8 @@ sparsity, respectively.</p>
 the end of each row, so we need to trim it in order for R to be able to
 parse it. We use a simple shell script, <a
 href="https://github.com/sabrina-mi/RatXcan_Training/blob/main/code/remove_trailing_tab.sh"><code>RatXcan_Training/code/remove_trailing_tab.sh</code></a>.</p>
-<pre class="bash"><code>cd /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+<pre class="bash"><code>CODE=/gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+cd $CODE
 chmod +x remove_trailing_tab.sh
 DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
 mkdir $DIR/hyp
@@ -812,8 +870,7 @@ done
 </code></pre>
 <p>Now we should have a new directory, <code>hyp</code>, that contains
 all of the <code>.hyp.txt</code> files in the correct format.</p>
-<pre class="r"><code>ge.dir &lt;- &quot;/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/hyp&quot;
-files &lt;- list.files(path = ge.dir, pattern = &quot;.hyp.txt&quot;, full.names = TRUE)</code></pre>
+<pre class="r"><code>base.dir &lt;- &quot;/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/&quot;</code></pre>
 <p>Each gene results in whole columns of PVE values, so we summarize the
 distribution in a new dataframe. (BSLMM employs the Metropolis-Hastings
 algorithm, a way to estimate the probability distributions of PVE and
@@ -826,54 +883,66 @@ algorithm.)</p>
 <pre class="r"><code>library(stringr)
 library(LearnBayes)
 
-PVE_df &lt;- as.data.frame(matrix(NA, 0, 4)) 
-
-for(i in 1:length(files)){
-  gene &lt;- str_extract(files[i], &quot;ENSRNOG([\\d]+)&quot;)
-  df &lt;- read.delim(files[i])
+fn_PVE_estimates &lt;- function(tis){
+  files &lt;- list.files(path = base.dir %&amp;% tis %&amp;% &quot;/hyp&quot;, pattern = &quot;.hyp.txt&quot;, full.names = TRUE)
+  PVE_df &lt;- as.data.frame(matrix(NA, 0, 4)) 
   
-  q1 &lt;- quantile(df$pve, 0.1)
-  q2 &lt;- quantile(df$pve, 0.9)
-  quantile1=list(p=.1 ,x=q1)
-  quantile2=list(p=.9, x=q2)
-  if(quantile1$x != quantile2$x) {
-  prior &lt;- beta.select(quantile1, quantile2)
-  credible_set &lt;- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+  for(i in 1:length(files)){
+    gene &lt;- str_extract(files[i], &quot;ENSRNOG([\\d]+)&quot;)
+    df &lt;- read.delim(files[i])
   
-  PVE_df[i, 1] &lt;- gene
-  PVE_df[i, 2] &lt;- qbeta(0.5, prior[1],  prior[2])
-  PVE_df[i, 3] &lt;- credible_set[1]
-  PVE_df[i, 4] &lt;- credible_set[2]
+    q1 &lt;- quantile(df$pve, 0.1)
+    q2 &lt;- quantile(df$pve, 0.9)
+    quantile1=list(p=.1 ,x=q1)
+    quantile2=list(p=.9, x=q2)
+    if(quantile1$x != quantile2$x) {
+    prior &lt;- beta.select(quantile1, quantile2)
+    credible_set &lt;- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+  
+    PVE_df[i, 1] &lt;- gene
+    PVE_df[i, 2] &lt;- qbeta(0.5, prior[1],  prior[2])
+    PVE_df[i, 3] &lt;- credible_set[1]
+    PVE_df[i, 4] &lt;- credible_set[2]
+    }
+    else 
+      i = i+1
   }
-  else 
-    i = i+1
-}
 
-write_tsv(PVE_df, &quot;/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PVE_estimates.txt&quot;, col_names = FALSE )</code></pre>
+  write_tsv(PVE_df, base.dir %&amp;% tis %&amp;% &quot;/PVE_estimates.txt&quot;, col_names = FALSE )
+}</code></pre>
+<pre class="r"><code>tissues = c(&quot;Ac&quot;, &quot;Il&quot;, &quot;Lh&quot;, &quot;Pl&quot;, &quot;Vo&quot;)
+for tis in tissues{
+  fn_PVE_estimates(tis)
+}</code></pre>
 <p>And repeat for PGE.</p>
-<pre class="r"><code>PGE_df &lt;- as.data.frame(matrix(NA, 0, 4))
-for(i in 1:length(files)){
-  gene &lt;- str_extract(files[i], &quot;ENSRNOG([\\d]+)&quot;)
-  df &lt;- read.delim(files[i])
+<pre class="r"><code>fn_PVE_estimates &lt;- function(tis){
+  files &lt;- list.files(path = base.dir %&amp;% tis %&amp;% &quot;/hyp&quot;, pattern = &quot;.hyp.txt&quot;, full.names = TRUE)
+  PGE_df &lt;- as.data.frame(matrix(NA, 0, 4))
+  for(i in 1:length(files)){
+    gene &lt;- str_extract(files[i], &quot;ENSRNOG([\\d]+)&quot;)
+    df &lt;- read.delim(files[i])
   
-  q1 &lt;- quantile(df$pge, 0.5)
-  q2 &lt;- quantile(df$pge, 0.9)
-  quantile1=list(p=.5 ,x=q1)
-  quantile2=list(p=.9, x=q2)
-  if(quantile1$x != quantile2$x) {
-  prior &lt;- beta.select(quantile1, quantile2)
-  credible_set &lt;- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+    q1 &lt;- quantile(df$pge, 0.5)
+    q2 &lt;- quantile(df$pge, 0.9)
+    quantile1=list(p=.5 ,x=q1)
+    quantile2=list(p=.9, x=q2)
+    if(quantile1$x != quantile2$x) {
+    prior &lt;- beta.select(quantile1, quantile2)
+    credible_set &lt;- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
   
-  PGE_df[i, 1] &lt;- gene
-  PGE_df[i, 2] &lt;- qbeta(0.5, prior[1],  prior[2])
-  PGE_df[i, 3] &lt;- credible_set[1]
-  PGE_df[i, 4] &lt;- credible_set[2]
+    PGE_df[i, 1] &lt;- gene
+    PGE_df[i, 2] &lt;- qbeta(0.5, prior[1],  prior[2])
+    PGE_df[i, 3] &lt;- credible_set[1]
+    PGE_df[i, 4] &lt;- credible_set[2]
+    }
+    else 
+      i = i+1
   }
-  else 
-    i = i+1
-}
-
-write_tsv(PGE_df, &quot;/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PGE_estimates.txt&quot;, col_names = FALSE )</code></pre>
+  write_tsv(PGE_df, base.dir %&amp;% tis %&amp;% &quot;/PGE_estimates.txt&quot;, col_names = FALSE )
+}</code></pre>
+<pre class="r"><code>for tis in tissues{
+  fn_PGE_estimates(tis)
+}</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
