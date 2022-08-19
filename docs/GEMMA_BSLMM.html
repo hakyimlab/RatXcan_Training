@@ -385,7 +385,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-08-18
+<strong>Last updated:</strong> 2022-08-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtreef65b5a15286c128814325dd91ce64360158baa1btargetblankf65b5a1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree2b4373af6417aab73ea699406abbd751e5ac1b7ftargetblank2b4373aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/f65b5a15286c128814325dd91ce64360158baa1b" target="_blank">f65b5a1</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/2b4373af6417aab73ea699406abbd751e5ac1b7f" target="_blank">2b4373a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtreef65b5a15286c128814325dd91ce64360158baa1btargetblankf65b5a1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree2b4373af6417aab73ea699406abbd751e5ac1b7ftargetblank2b4373aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/f65b5a15286c128814325dd91ce64360158baa1b" target="_blank">f65b5a1</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/2b4373af6417aab73ea699406abbd751e5ac1b7f" target="_blank">2b4373a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,15 +560,16 @@ Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
     Untracked:  README.html
-    Untracked:  analysis/.DS_Store
+    Untracked:  code/.DS_Store
     Untracked:  rsconnect/
 
 Unstaged changes:
     Modified:   analysis/GEMMA_BSLMM.Rmd
+    Modified:   analysis/index.Rmd
     Deleted:    output/README.md
 
 Staged changes:
-    New:        code/remove_trailing_tab.sh
+    Deleted:    code/Generate_GRMs.R
 
 </code></pre>
 <p>
@@ -619,6 +620,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/2b4373af6417aab73ea699406abbd751e5ac1b7f/analysis/GEMMA_BSLMM.Rmd" target="_blank">2b4373a</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-18
+</td>
+<td>
+completed documentation but could use some reorganizing
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/2b4373af6417aab73ea699406abbd751e5ac1b7f/docs/GEMMA_BSLMM.html" target="_blank">2b4373a</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-18
+</td>
+<td>
+completed documentation but could use some reorganizing
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/sabrina-mi/RatXcan_Training/blob/f65b5a15286c128814325dd91ce64360158baa1b/analysis/GEMMA_BSLMM.Rmd" target="_blank">f65b5a1</a>
 </td>
 <td>
@@ -643,24 +678,39 @@ wflow_rename("analysis/Rat_Heritability.Rmd",
 phenotype. In our analysis, we use gene expression values in place of a
 phenotype to estimate the heritability. It takes genotype, gene
 expression, and an estimated relatedness matrix as input.</p>
+<pre class="r"><code>library(tidyverse)
+&quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
+
+# rat tissues
+tissues = c(&quot;Ac&quot;, &quot;Il&quot;, &quot;Lh&quot;, &quot;Pl&quot;, &quot;Vo&quot;)
+
+# Create new directory for GEMMA inputs and outputs
+base.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/&quot;
+
+# path to write bimbam files
+bim.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/&quot;</code></pre>
 <div id="format-genotype-data" class="section level2">
 <h2>Format Genotype Data</h2>
 <p>The “bimbam” file we are writing does not exactly follow the BIMBAM
 mean genotype file format, but it contains all the necessary information
 to create subseted BIMBAM files for estimating the genetic relatedness
 matrix (GRM).</p>
-<pre class="r"><code>library(tidyverse)
-&quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
+<pre class="r"><code>load(&quot;~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData&quot;)
 
-load(&quot;~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData&quot;)
+fn_write_bimbam = function(tis){
+  bimfile &lt;- bim.dir %&amp;% tis %&amp;% &quot;_bimbam&quot;
 
-bim.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/&quot;
-bimfile &lt;- bim.dir %&amp;% &quot;Ac_bimbam&quot;
+# allows us to call gene expression table for each tissue without hard coding
+  gex = eval(as.name(&quot;gex&quot; %&amp;% tis))
 
-geno_Ac = geno[,match(colnames(gexAc)[-1], colnames(geno))]
-snps &lt;- paste(phyMap$Chr, phyMap$Pos, phyMap$Ref, phyMap$Alt, sep = &quot;_&quot;)
-Ac_bimbam &lt;- cbind(phyMap$Chr, phyMap$Pos, snps, phyMap$Ref, phyMap$Alt, geno_Ac)
-write.table(Ac_bimbam, file = bimfile,quote=F,col.names=F,row.names=F)</code></pre>
+  geno_tis = geno[,match(colnames(gex)[-1], colnames(geno))]
+  snps &lt;- paste(phyMap$Chr, phyMap$Pos, phyMap$Ref, phyMap$Alt, sep = &quot;_&quot;)
+  bimbam &lt;- cbind(phyMap$Chr, phyMap$Pos, snps, phyMap$Ref, phyMap$Alt, geno_tis)
+  write.table(bimbam, file = bimfile,quote=F,col.names=F,row.names=F)
+}</code></pre>
+<pre class="r"><code>for tis in tissues{
+  fn_write_bimbam(tis)
+}</code></pre>
 </div>
 <div id="generate-grms" class="section level2">
 <h2>Generate GRMs</h2>
@@ -669,34 +719,44 @@ variants for the genotype input and use gene expression values for the
 phenotype input. The output is a GRM estimating relatedness between the
 rats. BSLMM takes the GRM as input to control for individaul relatedness
 in association tests between genetic variance and gene expression.</p>
-<pre class="r"><code>pheno.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/phenotype_files/&quot;
-ge.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/genotype_files/&quot;
-grm.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output/&quot;
-bim.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/&quot;
-#Read in bimbam file
-bimfile &lt;- bim.dir %&amp;% &quot;Ac_bimbam&quot; ###get SNP position information###
+<pre class="r"><code>fn_run_gemma_grm = function(tis){
+  #Read in bimbam file
+  bimfile &lt;- bim.dir %&amp;% tis %&amp;% &quot;_bimbam&quot; ###get SNP position information###
 
-bim &lt;- read.table(bimfile)
-ensidlist &lt;- gexAc$EnsemblGeneID
-setwd(&quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/&quot;)
-for(i in 1:length(ensidlist)){
-  cat(i,&quot;/&quot;,length(ensidlist),&quot;\n&quot;)
-  gene &lt;- ensidlist[i]
-  geneinfo &lt;- gtf[match(gene, gtf$Gene),]
-  chr &lt;- geneinfo[1]
-  c &lt;- chr$Chr
-  start &lt;- geneinfo$Start - 1e6 ### 1Mb lower bound for cis-eQTLS
-  end &lt;- geneinfo$End + 1e6 ### 1Mb upper bound for cis-eQTLs
-  chrsnps &lt;- subset(bim, bim[,1]==c) ### pull snps on same chr
-  cissnps &lt;- subset(chrsnps,chrsnps[,2]&gt;=start &amp; chrsnps[,2]&lt;=end) ### pull cis-SNP info
-  snplist &lt;- cissnps[,3:ncol(cissnps)]
-  write.table(snplist, file= ge.dir %&amp;% &quot;tmp.Ac.geno&quot; %&amp;% gene, quote=F,col.names=F,row.names=F)
-  geneexp &lt;- cbind(as.numeric(gexAc[i,-1]))
-  write.table(geneexp, file= pheno.dir %&amp;% &quot;tmp.pheno.&quot; %&amp;% gene, col.names=F, row.names = F, quote=F) #output pheno for gemma
-  runGEMMAgrm &lt;- &quot;gemma -g &quot; %&amp;%  ge.dir %&amp;% &quot;tmp.Ac.geno&quot; %&amp;% gene %&amp;% &quot; -p &quot; %&amp;% pheno.dir %&amp;% &quot;tmp.pheno.&quot; %&amp;%  gene  %&amp;%  &quot; -gk -o /grm_Ac_&quot; %&amp;% gene
-  system(runGEMMAgrm)
+  pheno.dir &lt;- base.dir %&amp;% tis %&amp;% &quot;/phenotype_files/&quot;
+  ge.dir &lt;- base.dir %&amp;% tis %&amp;% &quot;/genotype_files/&quot;
+  grm.dir &lt;- base.dir %&amp;% tis %&amp;% &quot;/output/&quot;
 
+  bim &lt;- read.table(bimfile)
+
+  gex = eval(as.name(&quot;gex&quot; %&amp;% tis))
+  ensidlist &lt;- gex$EnsemblGeneID
+  setwd(base.dir %&amp;% tis)
+  for(i in 1:length(ensidlist)){
+    cat(i,&quot;/&quot;,length(ensidlist),&quot;\n&quot;)
+    gene &lt;- ensidlist[i]
+    geneinfo &lt;- gtf[match(gene, gtf$Gene),]
+    chr &lt;- geneinfo[1]
+    c &lt;- chr$Chr
+    start &lt;- geneinfo$Start - 1e6 ### 1Mb lower bound for cis-eQTLS
+    end &lt;- geneinfo$End + 1e6 ### 1Mb upper bound for cis-eQTLs
+    chrsnps &lt;- subset(bim, bim[,1]==c) ### pull snps on same chr
+    cissnps &lt;- subset(chrsnps,chrsnps[,2]&gt;=start &amp; chrsnps[,2]&lt;=end) ### pull cis-SNP info
+    snplist &lt;- cissnps[,3:ncol(cissnps)]
+    write.table(snplist, file= ge.dir %&amp;% &quot;tmp.&quot; %&amp;% tis %&amp;% &quot;.geno&quot; %&amp;% gene, quote=F,col.names=F,row.names=F)
+    geneexp &lt;- cbind(as.numeric(gex[i,-1]))
+    write.table(geneexp, file= pheno.dir %&amp;% &quot;tmp.pheno.&quot; %&amp;% gene, col.names=F, row.names = F, quote=F) #output pheno for gemma
+    runGEMMAgrm &lt;- &quot;gemma -g &quot; %&amp;%  ge.dir %&amp;% &quot;tmp.&quot; %&amp;% tis %&amp;% &quot;.geno&quot; %&amp;% gene %&amp;% &quot; -p &quot; %&amp;% pheno.dir %&amp;% &quot;tmp.pheno.&quot; %&amp;%  gene  %&amp;%  &quot; -gk -o /grm_&quot; %&amp;% tis %&amp;% &quot;_&quot; %&amp;% gene
+    system(runGEMMAgrm)
+  }
 }</code></pre>
+<p>This function takes about an hour to run, so instead of looping, I
+ran it separately for each tissue.</p>
+<pre class="r"><code>fn_run_gemma_grm(&quot;Ac&quot;)
+fn_run_gemma_grm(&quot;Il&quot;)
+fn_run_gemma_grm(&quot;Lh&quot;)
+fn_run_gemma_grm(&quot;Pl&quot;)
+fn_run_gemma_grm(&quot;Vo&quot;)</code></pre>
 <p>GEMMA creates a new folder, <code>output</code>, in the working
 directory the GRMs. They should have file extension
 <code>cXX.txt</code>. When we run BSLMM, GEMMA writes to the same
@@ -732,7 +792,6 @@ done</code></pre>
 <div id="read-heritability-and-sparsity-estimates"
 class="section level2">
 <h2>Read Heritability and Sparsity Estimates</h2>
-<p>GEMMA creates</p>
 <p>The BSLMM output is a table with columns: <code>h</code>,
 <code>pve</code>, <code>rho</code>, <code>pge</code>, <code>pi</code>,
 <code>n_gamma</code>. PVE is the proportion variance explained by causal
@@ -742,7 +801,7 @@ sparsity, respectively.</p>
 <p>For some bizarre reason, the output table contains an extra tab at
 the end of each row, so we need to trim it in order for R to be able to
 parse it. We use a simple shell script, <a
-href="code/remove_trailing_tab.sh"><code>/gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code/remove_trailing_tab.sh</code></a>.</p>
+href="https://github.com/sabrina-mi/RatXcan_Training/blob/main/code/remove_trailing_tab.sh"><code>RatXcan_Training/code/remove_trailing_tab.sh</code></a>.</p>
 <pre class="bash"><code>cd /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
 chmod +x remove_trailing_tab.sh
 DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac

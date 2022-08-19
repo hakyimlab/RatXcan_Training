@@ -8,4 +8,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Summary of RatXcan Pipeline:
+1. Train PredictDB Models
+2. Run PrediXcan
+3. Predict traits with PTRS
+  * Evaluate performance
+5. [Estimate heritability and sparsity of rat genes with GEMMA (BSLMM)](https://sabrina-mi.github.io/RatXcan_Training/GEMMA_BSLMM.html)

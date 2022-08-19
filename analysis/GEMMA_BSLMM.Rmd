@@ -9,22 +9,46 @@ editor_options:
 
 GEMMA generates heritability and predictability values for a given phenotype. In our analysis, we use gene expression values in place of a phenotype to estimate the heritability. It takes genotype, gene expression, and an estimated relatedness matrix as input.
 
+```{r variables, eval=FALSE}
+library(tidyverse)
+"%&%" = function(a,b) paste(a,b,sep="")
+
+# rat tissues
+tissues = c("Ac", "Il", "Lh", "Pl", "Vo")
+
+# Create new directory for GEMMA inputs and outputs
+base.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/"
+
+# path to write bimbam files
+bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
+
+```
+
+
 ## Format Genotype Data
 
 The "bimbam" file we are writing does not exactly follow the BIMBAM mean genotype file format, but it contains all the necessary information to create subseted BIMBAM files for estimating the genetic relatedness matrix (GRM).
 ```{r format genotypes, eval=FALSE}
-library(tidyverse)
-"%&%" = function(a,b) paste(a,b,sep="")
-
 load("~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData")
 
-bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
-bimfile <- bim.dir %&% "Ac_bimbam"
+fn_write_bimbam = function(tis){
+  bimfile <- bim.dir %&% tis %&% "_bimbam"
 
-geno_Ac = geno[,match(colnames(gexAc)[-1], colnames(geno))]
-snps <- paste(phyMap$Chr, phyMap$Pos, phyMap$Ref, phyMap$Alt, sep = "_")
-Ac_bimbam <- cbind(phyMap$Chr, phyMap$Pos, snps, phyMap$Ref, phyMap$Alt, geno_Ac)
-write.table(Ac_bimbam, file = bimfile,quote=F,col.names=F,row.names=F)
+# allows us to call gene expression table for each tissue without hard coding
+  gex = eval(as.name("gex" %&% tis))
+
+  geno_tis = geno[,match(colnames(gex)[-1], colnames(geno))]
+  snps <- paste(phyMap$Chr, phyMap$Pos, phyMap$Ref, phyMap$Alt, sep = "_")
+  bimbam <- cbind(phyMap$Chr, phyMap$Pos, snps, phyMap$Ref, phyMap$Alt, geno_tis)
+  write.table(bimbam, file = bimfile,quote=F,col.names=F,row.names=F)
+}
+
+```
+
+```{r write bimbam for each tissue, eval=FALSE}
+for tis in tissues{
+  fn_write_bimbam(tis)
+}
 
 ```
 
@@ -33,35 +57,48 @@ write.table(Ac_bimbam, file = bimfile,quote=F,col.names=F,row.names=F)
 For each gene, we subset the initial "bimbam" file to cis eQTL variants for the genotype input and use gene expression values for the phenotype input. The output is a GRM estimating relatedness between the rats. BSLMM takes the GRM as input to control for individaul relatedness in association tests between genetic variance and gene expression.
 
 ```{r run gemma, eval=FALSE}
-pheno.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/phenotype_files/"
-ge.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/genotype_files/"
-grm.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output/"
-bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
-#Read in bimbam file
-bimfile <- bim.dir %&% "Ac_bimbam" ###get SNP position information###
+fn_run_gemma_grm = function(tis){
+  #Read in bimbam file
+  bimfile <- bim.dir %&% tis %&% "_bimbam" ###get SNP position information###
 
-bim <- read.table(bimfile)
-ensidlist <- gexAc$EnsemblGeneID
-setwd("/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/")
-for(i in 1:length(ensidlist)){
-  cat(i,"/",length(ensidlist),"\n")
-  gene <- ensidlist[i]
-  geneinfo <- gtf[match(gene, gtf$Gene),]
-  chr <- geneinfo[1]
-  c <- chr$Chr
-  start <- geneinfo$Start - 1e6 ### 1Mb lower bound for cis-eQTLS
-  end <- geneinfo$End + 1e6 ### 1Mb upper bound for cis-eQTLs
-  chrsnps <- subset(bim, bim[,1]==c) ### pull snps on same chr
-  cissnps <- subset(chrsnps,chrsnps[,2]>=start & chrsnps[,2]<=end) ### pull cis-SNP info
-  snplist <- cissnps[,3:ncol(cissnps)]
-  write.table(snplist, file= ge.dir %&% "tmp.Ac.geno" %&% gene, quote=F,col.names=F,row.names=F)
-  geneexp <- cbind(as.numeric(gexAc[i,-1]))
-  write.table(geneexp, file= pheno.dir %&% "tmp.pheno." %&% gene, col.names=F, row.names = F, quote=F) #output pheno for gemma
-  runGEMMAgrm <- "gemma -g " %&%  ge.dir %&% "tmp.Ac.geno" %&% gene %&% " -p " %&% pheno.dir %&% "tmp.pheno." %&%  gene  %&%  " -gk -o /grm_Ac_" %&% gene
-  system(runGEMMAgrm)
+  pheno.dir <- base.dir %&% tis %&% "/phenotype_files/"
+  ge.dir <- base.dir %&% tis %&% "/genotype_files/"
+  grm.dir <- base.dir %&% tis %&% "/output/"
 
+  bim <- read.table(bimfile)
+
+  gex = eval(as.name("gex" %&% tis))
+  ensidlist <- gex$EnsemblGeneID
+  setwd(base.dir %&% tis)
+  for(i in 1:length(ensidlist)){
+    cat(i,"/",length(ensidlist),"\n")
+    gene <- ensidlist[i]
+    geneinfo <- gtf[match(gene, gtf$Gene),]
+    chr <- geneinfo[1]
+    c <- chr$Chr
+    start <- geneinfo$Start - 1e6 ### 1Mb lower bound for cis-eQTLS
+    end <- geneinfo$End + 1e6 ### 1Mb upper bound for cis-eQTLs
+    chrsnps <- subset(bim, bim[,1]==c) ### pull snps on same chr
+    cissnps <- subset(chrsnps,chrsnps[,2]>=start & chrsnps[,2]<=end) ### pull cis-SNP info
+    snplist <- cissnps[,3:ncol(cissnps)]
+    write.table(snplist, file= ge.dir %&% "tmp." %&% tis %&% ".geno" %&% gene, quote=F,col.names=F,row.names=F)
+    geneexp <- cbind(as.numeric(gex[i,-1]))
+    write.table(geneexp, file= pheno.dir %&% "tmp.pheno." %&% gene, col.names=F, row.names = F, quote=F) #output pheno for gemma
+    runGEMMAgrm <- "gemma -g " %&%  ge.dir %&% "tmp." %&% tis %&% ".geno" %&% gene %&% " -p " %&% pheno.dir %&% "tmp.pheno." %&%  gene  %&%  " -gk -o /grm_" %&% tis %&% "_" %&% gene
+    system(runGEMMAgrm)
+  }
 }
 
+```
+
+This function takes about an hour to run, so instead of looping, I ran it separately for each tissue.
+
+```{r, eval=FALSE}
+fn_run_gemma_grm("Ac")
+fn_run_gemma_grm("Il")
+fn_run_gemma_grm("Lh")
+fn_run_gemma_grm("Pl")
+fn_run_gemma_grm("Vo")
 ```
 
 GEMMA creates a new folder, `output`, in the working directory the GRMs. They should have file extension `cXX.txt`. When we run BSLMM, GEMMA writes to the same `output` folder, so we rename to separate the two.
@@ -99,11 +136,9 @@ done
 
 ## Read Heritability and Sparsity Estimates
 
-GEMMA creates
-
 The BSLMM output is a table with columns: `h`, `pve`, `rho`, `pge`, `pi`, `n_gamma`. PVE is the proportion variance explained by causal variants and PGE is the proportion of genetic variance explained by sparse effects. We interpret them as estimates for heritability and sparsity, respectively.
 
-For some bizarre reason, the output table contains an extra tab at the end of each row, so we need to trim it in order for R to be able to parse it. We use a simple shell script, [`/gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code/remove_trailing_tab.sh`](code/remove_trailing_tab.sh).
+For some bizarre reason, the output table contains an extra tab at the end of each row, so we need to trim it in order for R to be able to parse it. We use a simple shell script, [`RatXcan_Training/code/remove_trailing_tab.sh`](https://github.com/sabrina-mi/RatXcan_Training/blob/main/code/remove_trailing_tab.sh).
 
 ```{bash, eval=FALSE}
 cd /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
