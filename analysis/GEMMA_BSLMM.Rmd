@@ -18,7 +18,6 @@ tissues = c("Ac", "Il", "Lh", "Pl", "Vo")
 
 # Create new directory for GEMMA inputs and outputs
 base.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/"
-
 # path to write bimbam files
 bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
 
@@ -104,7 +103,8 @@ fn_run_gemma_grm("Vo")
 GEMMA creates a new folder, `output`, in the working directory the GRMs. They should have file extension `cXX.txt`. When we run BSLMM, GEMMA writes to the same `output` folder, so we rename to separate the two.
 
 ```{bash, eval=FALSE}
-mv /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/GRMs
+DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+mv $DIR/output $DIR/GRMs
 ```
 
 ## Run BSLMM
@@ -112,10 +112,27 @@ mv /Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/Ac/output /Users/sa
 Running BSLMM is more computationally expensive than estimating GRMs, but parallelizable if we run it in CRI. 
 We use Alvaro's [Badger script](https://github.com/hakyimlab/badger) to create a PBS batch job for each gene.
 
+I put all the bash commands for submitting BSLMM jobs into a shell script:
 ```{bash, eval=FALSE}
+cd gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+chmod +x Ac_GEMMA_BSLMM.sh
+chmod +x Il_GEMMA_BSLMM.sh
+chmod +x Lh_GEMMA_BSLMM.sh
+chmod +x Pl_GEMMA_BSLMM.sh
+chmod +x Vo_GEMMA_BSLMM.sh
+
+./Ac_GEMMA_BSLMM.sh
+```
+
+Because of the CRI job limit, I waited for all the jobs to clear before repeating for the next tissue. 
+
+The details of the scripts are documented below:
+
+```{bash, eval=FALSE}
+DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
 cd /gpfs/data/im-lab/nas40t2/Github/badger
 /gpfs/data/im-lab/nas40t2/lab_software/miniconda/envs/ukb_env/bin/python src/badger.py \
--yaml_configuration_file /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code/GEMMA_submission.yaml \
+-yaml_configuration_file $DIR/GEMMA_submission.yaml \
 -parsimony 9
 
 ```
@@ -123,7 +140,7 @@ cd /gpfs/data/im-lab/nas40t2/Github/badger
 There should be a folder `/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/jobs` that contains all the job scripts. CRI has a job limit of 10,000, but we have about 15,000 genes. We can work around it by repeating the chunk below.
 
 ```{bash, eval=FALSE}
-cd /gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
+cd $DIR
 for job in jobs/gemma*; do
 if  (($(qstat | wc -l) > 10000)); then
 break
@@ -141,7 +158,8 @@ The BSLMM output is a table with columns: `h`, `pve`, `rho`, `pge`, `pi`, `n_gam
 For some bizarre reason, the output table contains an extra tab at the end of each row, so we need to trim it in order for R to be able to parse it. We use a simple shell script, [`RatXcan_Training/code/remove_trailing_tab.sh`](https://github.com/sabrina-mi/RatXcan_Training/blob/main/code/remove_trailing_tab.sh).
 
 ```{bash, eval=FALSE}
-cd /gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+CODE=/gpfs/data/im-lab/nas40t2/Github/RatXcan_Training/code
+cd $CODE
 chmod +x remove_trailing_tab.sh
 DIR=/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac
 mkdir $DIR/hyp
@@ -154,8 +172,8 @@ done
 Now we should have a new directory, `hyp`, that contains all of the `.hyp.txt` files in the correct format.
 
 ```{r}
-ge.dir <- "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/hyp"
-files <- list.files(path = ge.dir, pattern = ".hyp.txt", full.names = TRUE)
+base.dir <- "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/"
+
 ```
 
 Each gene results in whole columns of PVE values, so we summarize the distribution in a new dataframe. (BSLMM employs the Metropolis-Hastings algorithm, a way to estimate the probability distributions of PVE and PGE given the observed data. Under a very, very loose interpretation, BSLMM simulates different values of the parameters, computes the probability they result in our observed data, and repeats until it settles on the most likely sampled value of the parameters. Each row in the `.hyp.txt` file represents an iteration of the M-H algorithm.)
@@ -165,61 +183,80 @@ Each gene results in whole columns of PVE values, so we summarize the distributi
 library(stringr)
 library(LearnBayes)
 
-PVE_df <- as.data.frame(matrix(NA, 0, 4)) 
-
-for(i in 1:length(files)){
-  gene <- str_extract(files[i], "ENSRNOG([\\d]+)")
-  df <- read.delim(files[i])
+fn_PVE_estimates <- function(tis){
+  files <- list.files(path = base.dir %&% tis %&% "/hyp", pattern = ".hyp.txt", full.names = TRUE)
+  PVE_df <- as.data.frame(matrix(NA, 0, 4)) 
   
-  q1 <- quantile(df$pve, 0.1)
-  q2 <- quantile(df$pve, 0.9)
-  quantile1=list(p=.1 ,x=q1)
-  quantile2=list(p=.9, x=q2)
-  if(quantile1$x != quantile2$x) {
-  prior <- beta.select(quantile1, quantile2)
-  credible_set <- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+  for(i in 1:length(files)){
+    gene <- str_extract(files[i], "ENSRNOG([\\d]+)")
+    df <- read.delim(files[i])
   
-  PVE_df[i, 1] <- gene
-  PVE_df[i, 2] <- qbeta(0.5, prior[1],  prior[2])
-  PVE_df[i, 3] <- credible_set[1]
-  PVE_df[i, 4] <- credible_set[2]
+    q1 <- quantile(df$pve, 0.1)
+    q2 <- quantile(df$pve, 0.9)
+    quantile1=list(p=.1 ,x=q1)
+    quantile2=list(p=.9, x=q2)
+    if(quantile1$x != quantile2$x) {
+    prior <- beta.select(quantile1, quantile2)
+    credible_set <- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+  
+    PVE_df[i, 1] <- gene
+    PVE_df[i, 2] <- qbeta(0.5, prior[1],  prior[2])
+    PVE_df[i, 3] <- credible_set[1]
+    PVE_df[i, 4] <- credible_set[2]
+    }
+    else 
+      i = i+1
   }
-  else 
-    i = i+1
+
+  write_tsv(PVE_df, base.dir %&% tis %&% "/PVE_estimates.txt", col_names = FALSE )
 }
 
-write_tsv(PVE_df, "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PVE_estimates.txt", col_names = FALSE )
+```
 
+```{r, eval=FALSE}
+tissues = c("Ac", "Il", "Lh", "Pl", "Vo")
+for tis in tissues{
+  fn_PVE_estimates(tis)
+}
 
 ```
 
 And repeat for PGE.
 
 ```{r pge estimates, eval=FALSE}
-
-PGE_df <- as.data.frame(matrix(NA, 0, 4))
-for(i in 1:length(files)){
-  gene <- str_extract(files[i], "ENSRNOG([\\d]+)")
-  df <- read.delim(files[i])
+fn_PVE_estimates <- function(tis){
+  files <- list.files(path = base.dir %&% tis %&% "/hyp", pattern = ".hyp.txt", full.names = TRUE)
+  PGE_df <- as.data.frame(matrix(NA, 0, 4))
+  for(i in 1:length(files)){
+    gene <- str_extract(files[i], "ENSRNOG([\\d]+)")
+    df <- read.delim(files[i])
   
-  q1 <- quantile(df$pge, 0.5)
-  q2 <- quantile(df$pge, 0.9)
-  quantile1=list(p=.5 ,x=q1)
-  quantile2=list(p=.9, x=q2)
-  if(quantile1$x != quantile2$x) {
-  prior <- beta.select(quantile1, quantile2)
-  credible_set <- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
+    q1 <- quantile(df$pge, 0.5)
+    q2 <- quantile(df$pge, 0.9)
+    quantile1=list(p=.5 ,x=q1)
+    quantile2=list(p=.9, x=q2)
+    if(quantile1$x != quantile2$x) {
+    prior <- beta.select(quantile1, quantile2)
+    credible_set <- list(qbeta(0.025,prior[1],  prior[2]), qbeta(0.975,prior[1],  prior[2]))
   
-  PGE_df[i, 1] <- gene
-  PGE_df[i, 2] <- qbeta(0.5, prior[1],  prior[2])
-  PGE_df[i, 3] <- credible_set[1]
-  PGE_df[i, 4] <- credible_set[2]
+    PGE_df[i, 1] <- gene
+    PGE_df[i, 2] <- qbeta(0.5, prior[1],  prior[2])
+    PGE_df[i, 3] <- credible_set[1]
+    PGE_df[i, 4] <- credible_set[2]
+    }
+    else 
+      i = i+1
   }
-  else 
-    i = i+1
+  write_tsv(PGE_df, base.dir %&% tis %&% "/PGE_estimates.txt", col_names = FALSE )
 }
 
-write_tsv(PGE_df, "/gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/Ac/PGE_estimates.txt", col_names = FALSE )
+```
+
+```{r, eval=FALSE}
+for tis in tissues{
+  fn_PGE_estimates(tis)
+}
+
 ```
 
 
