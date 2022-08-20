@@ -1,0 +1,1 @@
+These scripts are used specifically for the Elastic Net Prediction Model Pipeline, kept separately from the file in `code` we use for rat genomic analysis.

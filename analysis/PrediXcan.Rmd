@@ -1,0 +1,29 @@
+---
+title: "Run_PrediXcan"
+author: "sabrina-mi"
+date: "2022-08-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+Predict gene expression using elastic net model trained on Ac tissue data.
+
+```{bash run prediXcan, eval = FALSE}
+#run prediXcan
+conda activate imlabtools
+METAXCAN=/Users/sabrinami/Github/MetaXcan/software
+GENO=/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/data/rat_genotypes_LD_pruned_0.95
+MODEL=/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql
+OUTPUT=/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/PrediXcan/metabolic_traits/
+
+python $METAXCAN/Predict.py \
+--model_db_path $MODEL/Ac_best_prediXcan_db.db \
+--text_genotypes \
+ $GENO/chr*.round2_impute2_3473.txt  \
+--on_the_fly_mapping METADATA "{}_{}_{}_{}" \
+--text_sample_ids $GENO/samples_Rat_metab_phenos_file \
+--prediction_output $OUTPUT/rat_metabolic_Ac_best__predict.txt  \
+--prediction_summary_output $OUTPUT/rat_metabolic_Ac_best__summary.txt \
+--throw
+```
