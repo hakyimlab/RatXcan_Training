@@ -33,7 +33,7 @@ data.dir <- "/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipe
 
 ## Data Wrangling
 
-The `orth.rats` file contains gives a dictionary between human genes and the corresponding gene in rats. 
+The `orth.rats` file gives a dictionary between human genes and the corresponding gene in rats. 
 ```{r file dir, eval=FALSE}
 orth.rats <- read_tsv(data.dir %&% "expression/ortholog_genes_rats_humans.tsv", col_names = TRUE)
 ```

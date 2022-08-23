@@ -11,9 +11,9 @@
 
 <meta name="author" content="sabrina-mi" />
 
-<meta name="date" content="2022-08-19" />
+<meta name="date" content="2022-08-22" />
 
-<title>Rat_PTRS</title>
+<title>Analyze_PrediXcan_Results</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -354,9 +354,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Rat_PTRS</h1>
+<h1 class="title toc-ignore">Analyze_PrediXcan_Results</h1>
 <h4 class="author">sabrina-mi</h4>
-<h4 class="date">2022-08-19</h4>
+<h4 class="date">2022-08-22</h4>
 
 </div>
 
@@ -423,10 +423,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -562,6 +562,7 @@ Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
     Untracked:  analysis/Analyze_PrediXcan_Results.Rmd
+    Untracked:  analysis/figure/
 
 Unstaged changes:
     Modified:   analysis/.DS_Store
@@ -583,170 +584,357 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/Rat_PTRS.Rmd</code>) and HTML
-(<code>docs/Rat_PTRS.html</code>) files. If you’ve configured a remote
-Git repository (see <code>?wflow_git_remote</code>), click on the
-hyperlinks in the table below to view the files as they were in that
-past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/3dc873d354695800ed363e4e5e13acc734280a6f/analysis/Rat_PTRS.Rmd" target="_blank">3dc873d</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-20
-</td>
-<td>
-copy over documentation from Rat Genomics Paper Pipeline
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/3dc873d354695800ed363e4e5e13acc734280a6f/docs/Rat_PTRS.html" target="_blank">3dc873d</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-20
-</td>
-<td>
-copy over documentation from Rat Genomics Paper Pipeline
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<div id="setup" class="section level2">
-<h2>Setup</h2>
-<pre class="r"><code>library(tidyverse)</code></pre>
+<div id="identify-significant-genes" class="section level2">
+<h2>Identify Significant Genes</h2>
+<pre class="r"><code>library(readr)
+library(tidyverse)</code></pre>
 <pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-✔ tibble  3.0.4     ✔ dplyr   1.0.2
-✔ tidyr   1.1.2     ✔ stringr 1.4.0
-✔ readr   1.4.0     ✔ forcats 0.5.0</code></pre>
+<pre><code>✔ ggplot2 3.3.6     ✔ dplyr   1.0.2
+✔ tibble  3.0.4     ✔ stringr 1.4.0
+✔ tidyr   1.1.2     ✔ forcats 0.5.0
+✔ purrr   0.3.4     </code></pre>
 <pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(data.table)</code></pre>
+<pre class="r"><code>tis=&quot;Ac&quot;
+&quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
+dir=&quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/&quot;</code></pre>
+<p>Read in association results for each phenotype, and combine in one
+dataframe.</p>
+<pre class="r"><code>library(stringr)
+filelist &lt;- list.files(dir %&amp;% &quot;Results/PrediXcan/metabolic_traits&quot;, pattern = &quot;Ac__association_&quot;, full.names = TRUE)
+full_df &lt;- data.frame()
+
+for(file in filelist) {
+  assoc_file &lt;- read_tsv(file, col_names = TRUE)
+  # extract phenotype from regex matching in file name
+  pheno_id &lt;- str_match(file, &quot;association_(.*?).txt&quot;)[,2]
+  tempo &lt;- cbind(assoc_file, metabolic_trait=pheno_id) %&gt;% select(-c(status))
+  full_df &lt;- rbind(full_df, tempo)
+} </code></pre>
 <pre><code>
-Attaching package: &#39;data.table&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
 
-    between, first, last</code></pre>
-<pre><code>The following object is masked from &#39;package:purrr&#39;:
 
-    transpose</code></pre>
-<pre class="r"><code>library(RSQLite)
-library(glmnet)</code></pre>
-<pre><code>Loading required package: Matrix</code></pre>
-<pre><code>
-Attaching package: &#39;Matrix&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:tidyr&#39;:
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
 
-    expand, pack, unpack</code></pre>
-<pre><code>Loaded glmnet 4.1-3</code></pre>
-<pre class="r"><code>&quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
-devtools::source_gist(&quot;ee5f67abddd0b761ee24410ea71c41aa&quot;)</code></pre>
-<pre><code>Sourcing https://gist.githubusercontent.com/natashasanthanam/ee5f67abddd0b761ee24410ea71c41aa/raw/185ab37e5a31f1d3bab1530e468950e30ff31337/fn_generate_trait.R</code></pre>
-<pre><code>SHA-1 hash of file is c56941964697a118c351c3f81322a221fa13a1b3</code></pre>
-<pre class="r"><code>devtools::source_gist(&quot;38431b74c6c0bf90c12f&quot;)</code></pre>
-<pre><code>Sourcing https://gist.githubusercontent.com/hakyim/38431b74c6c0bf90c12f/raw/f16d9de559d20ce605e1e13eee75e82a0f6e1507/qqunif.R</code></pre>
-<pre><code>SHA-1 hash of file is c5aba9ddce06b95125b727d96bffe7bd1557fcc3</code></pre>
-<pre class="r"><code>devtools::source_gist(&quot;1e9053c8f35c30396429350a08f33ea7&quot;)</code></pre>
-<pre><code>Sourcing https://gist.githubusercontent.com/natashasanthanam/1e9053c8f35c30396429350a08f33ea7/raw/e35c8cabb742f17f1998f9ac4198878f9c683605/qqunif.R</code></pre>
-<pre><code>SHA-1 hash of file is 7388784ab8c7c2dc5c3f950dc8a47a1c76e3d7ac</code></pre>
-<p>Yanyu’s PTRS weights estimate the effect of genes on a given trait,
-in this case we pick height and BMI.</p>
-<pre class="r"><code>traits &lt;- c(&quot;height&quot;, &quot;bmi&quot;)
-# folder with PrediXcan results
-results.dir &lt;- &quot;/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/PrediXcan/metabolic_traits/&quot;
-# folder with PTRS weights, predicted traits will output here
-data.dir &lt;- &quot;/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/data/&quot;</code></pre>
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)
+
+
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  gene = col_character(),
+  effect = col_double(),
+  se = col_double(),
+  zscore = col_double(),
+  pvalue = col_double(),
+  n_samples = col_double(),
+  status = col_logical()
+)</code></pre>
+<p>We first filter for all significant genes for any of the 10
+phenotypes. The last two lines of the chunk count the number of traits
+each gene is significantly associated with and the number of significant
+genes for each trait.</p>
+<pre class="r"><code>#full_df &lt;- read_tsv(&quot;/Users/natashasanthanam/Github/rat-genomic-analysis/data/rat_metabolic_traits_best_Ac_full_assocs.txt&quot;, col_names = TRUE)
+
+tempo_df &lt;- full_df %&gt;% filter(pvalue &lt;  9.279881e-06)
+
+#428 sig genes
+tempo_df %&gt;% group_by(gene) %&gt;% summarise(n = n())</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code># A tibble: 429 x 2
+   gene                   n
+   &lt;chr&gt;              &lt;int&gt;
+ 1 ENSRNOG00000000245     1
+ 2 ENSRNOG00000000246     1
+ 3 ENSRNOG00000000571     1
+ 4 ENSRNOG00000000763     1
+ 5 ENSRNOG00000000775     1
+ 6 ENSRNOG00000000778     1
+ 7 ENSRNOG00000000867     1
+ 8 ENSRNOG00000000891     3
+ 9 ENSRNOG00000000902     2
+10 ENSRNOG00000000974     2
+# … with 419 more rows</code></pre>
+<pre class="r"><code>#all 11 traits
+tempo_df %&gt;% group_by(metabolic_trait) %&gt;% summarise(n = n())</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code># A tibble: 10 x 2
+   metabolic_trait            n
+   &lt;chr&gt;                  &lt;int&gt;
+ 1 bmi_bodylength_w_tail     30
+ 2 bmi_bodylength_wo_tail    19
+ 3 bodylength_w_tail        101
+ 4 bodylength_wo_tail        33
+ 5 bodyweight                82
+ 6 epifat                    46
+ 7 fasting_glucose           12
+ 8 parafat                   26
+ 9 retrofat                 185
+10 tail_length               53</code></pre>
 </div>
-<div id="data-wrangling" class="section level2">
-<h2>Data Wrangling</h2>
+<div id="plot-association-results" class="section level1">
+<h1>Plot Association Results</h1>
 <p>The <code>orth.rats</code> file gives a dictionary between human
-genes and the corresponding gene in rats.</p>
-<pre class="r"><code>orth.rats &lt;- read_tsv(data.dir %&amp;% &quot;expression/ortholog_genes_rats_humans.tsv&quot;, col_names = TRUE)</code></pre>
-<p>We first replace rat genes in the predicted expression results with
-their corresponding human genes, so that it could be compatible with
-PTRS weights.</p>
-<pre class="r"><code>pred_expr &lt;- read_tsv(results.dir %&amp;% &quot;rat_metabolic_Ac_best__predict.txt&quot;) %&gt;% select(-c(FID))
+genes and the corresponding gene in rats, queried from the <a
+href="https://lab-notes.hakyimlab.org/post/2022/06/28/query-gene-annotations-from-biomart/">Biomart
+database</a>.</p>
+<p>In the following chunk, we use it to annotate our dataframe with gene
+symbols. Then we replace metabolic trait names and add a column marking
+all the significant genes.</p>
+<pre class="r"><code>orth.rats &lt;- read_tsv(dir %&amp;% &quot;data/expression/ortholog_genes_rats_humans.tsv&quot;)</code></pre>
+<pre><code>
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  ensembl_gene_id = col_character(),
+  external_gene_name = col_character(),
+  rnorvegicus_homolog_ensembl_gene = col_character(),
+  rnorvegicus_homolog_associated_gene_name = col_character()
+)</code></pre>
+<pre class="r"><code>full_df &lt;- full_df %&gt;% filter(metabolic_trait == &quot;bmi_bodylength_w_tail&quot; | metabolic_trait ==  &quot;bodylength_w_tail&quot;| metabolic_trait == &quot;bodyweight&quot; | metabolic_trait == &quot;fasting_glucose&quot; | metabolic_trait == &quot;epifat&quot; |  metabolic_trait == &quot;retrofat&quot; | metabolic_trait == &quot;parafat&quot;)
 
-#filter only for genes that have a human ortholog
-pred_expr &lt;- pred_expr %&gt;% select(c(IID, intersect(colnames(pred_expr), orth.rats$rnorvegicus_homolog_ensembl_gene) ))
+full_df &lt;- full_df %&gt;% mutate(gene_name = orth.rats[match(full_df$gene, orth.rats$rnorvegicus_homolog_ensembl_gene),4]$rnorvegicus_homolog_associated_gene_name, .before = effect)
 
-#change name to human ensembl id in humans
-colnames(pred_expr)[2:ncol(pred_expr)] &lt;- orth.rats[match(colnames(pred_expr)[2:ncol(pred_expr)], orth.rats$rnorvegicus_homolog_ensembl_gene), 1] %&gt;% .[[&quot;ensembl_gene_id&quot;]]</code></pre>
-<p>Then we reformat the PTRS weight files, removing the Ensembl version
-from gene names.</p>
-<pre class="r"><code>fn_weights = function(trait)
-{
-  weights &lt;- read_tsv(data.dir %&amp;% &quot;PTRS_weights/weight_files/elastic_net_alpha_0.1_British.export_model/weights.&quot; %&amp;% trait %&amp;% &quot;.tsv.gz&quot;)
-  weights$gene_id &lt;- sapply(strsplit(weights$gene_id, &quot;\\.&quot;), `[`, 1)
-  rownames(weights) &lt;- weights$gene_id
-  weights &lt;- weights %&gt;% rename(gene_name = gene_id)
-  return(weights)
-}</code></pre>
-<p>We converted the predicted expression for rat genes to corresponding
-human gene names, matching the PTRS gene names. This lets us combine
-PTRS weights, trained from human transcriptomic data, with predicted
-transciptome of the rats using the fn_generate_trait function below. The
-output is the predicted height for individual rats.</p>
-<p>In some ways, we can interpret generate_trait as the opposite of
-PrediXcan. Both start from the predicted transcriptome of a group of
-individuals, PrediXcan works backwards from values of their observed
-trait to compute association between genes and the trait, whereas
-fn_generate_trait assumes those associations to predict the trait for
-each individual. PTRS is particularly insightful in this case, because
-of its portability across different population groups. We hope this
-extends across species, motivating our final goal of comparing the
-performance of PTRS in humans and rats.</p>
-<pre class="r"><code>for(trait in traits) {
-  weights &lt;- fn_weights(trait)
-  pred_trait &lt;- fn_generate_trait(pred_expr, weights)
-  saveRDS(pred_trait, data.dir %&amp;% &quot;rat_pred_&quot; %&amp;% trait %&amp;% &quot;_w_Human_best_PTRS.RDS&quot;)
-  return(pred_trait)
-}</code></pre>
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;bmi_bodylength_w_tail&quot; ] &lt;- &quot;Body Mass Index (BMI) with tail&quot;
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;bodylength_w_tail&quot; ] &lt;- &quot;Body length including tail&quot;
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;bodyweight&quot; ] &lt;- &quot;Body weight&quot;
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;fasting_glucose&quot; ] &lt;- &quot;Fasting Glucose&quot;
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;epifat&quot; ] &lt;- &quot;Epididymal fat&quot;
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;retrofat&quot; ] &lt;- &quot;Retroperitoneal fat&quot;
+full_df$metabolic_trait[full_df$metabolic_trait == &quot;parafat&quot; ] &lt;- &quot;Parametrial fat&quot;
+
+full_df &lt;- full_df %&gt;% mutate(bf_sig = ifelse(full_df$pvalue &lt;= 9.279881e-06, &quot;Yes&quot;, &quot;No&quot;))</code></pre>
+<p>We add loci information and separate results for each phenotype.</p>
+<pre class="r"><code>gene_annot &lt;- readRDS(dir %&amp;% &quot;data/gene_annotation.RDS&quot;) %&gt;% select(c(&quot;chr&quot;, &quot;gene_id&quot;, &quot;start&quot;, &quot;end&quot;)) %&gt;% rename(gene = gene_id)
+
+tempo_manhatt &lt;- inner_join(gene_annot, full_df, by = &quot;gene&quot;)
+tempo_manhatt$chr &lt;- as.numeric(tempo_manhatt$chr)
+
+bmi_manhat &lt;- tempo_manhatt %&gt;% filter(metabolic_trait == &quot;Body Mass Index (BMI) with tail&quot;) 
+bmi_manhat &lt;- bmi_manhat %&gt;% mutate(gene_name = orth.rats[match(bmi_manhat$gene, orth.rats$rnorvegicus_homolog_ensembl_gene), 4]$rnorvegicus_homolog_associated_gene_name)
+
+height_manhat &lt;- tempo_manhatt %&gt;% filter(metabolic_trait == &quot;Body length including tail&quot;) 
+height_manhat &lt;- height_manhat %&gt;% mutate(gene_name = orth.rats[match(height_manhat$gene, orth.rats$rnorvegicus_homolog_ensembl_gene), 4]$rnorvegicus_homolog_associated_gene_name)</code></pre>
+<p>Note: I’m not sure where to find the
+<code>Human_phenomeXcan_all_traits.txt</code> file, but I assume it is a
+dictionary for human genes significantly associated to a set of
+phenotypes and their homologous rat genes. Until I find out how this
+file was queried, we skip this step and continue to the Manhattan plots.
+In any case, we have all the data we need to generate the plots, we only
+reference the human genes to label some of the significant genes in the
+figure.</p>
+<pre class="r"><code>human_height_genes &lt;- read_tsv(&quot;/Users/natashasanthanam/Downloads/Human_phenomeXcan_all_traits.txt&quot;, col_names = TRUE)
+human_height_genes &lt;- human_height_genes %&gt;% mutate(rat_gene = orth.rats[match(human_height_genes$gene_name, orth.rats$external_gene_name), 4]$rnorvegicus_homolog_associated_gene_name) %&gt;% filter(pvalue_Height &lt;= 0.01)
+
+
+human_bmi_genes &lt;- read_tsv(&quot;/Users/natashasanthanam/Downloads/Human_phenomeXcan_all_traits.txt&quot;, col_names = TRUE) 
+colnames(human_bmi_genes)[2] = &quot;pvalue_BMI&quot;
+human_bmi_genes &lt;- human_bmi_genes %&gt;% mutate(rat_gene = orth.rats[match(human_bmi_genes$gene_name, orth.rats$external_gene_name), 4]$rnorvegicus_homolog_associated_gene_name) %&gt;% filter(pvalue_BMI &lt;= 0.01 )</code></pre>
+<p>Generate Manhattan plots for BMI and height. If you wanted to add
+labels for human genes, you can uncomment the
+<code>geom_label_repel</code> line.</p>
+<pre class="r"><code>library(ggrepel)
+data_cum &lt;- bmi_manhat %&gt;% 
+  group_by(chr) %&gt;% 
+  summarise(max_bp = as.numeric(max(start))) %&gt;% 
+  mutate(bp_add = lag(cumsum(max_bp), default = 0)) %&gt;% 
+  select(chr, bp_add)</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>gwas_data &lt;- bmi_manhat %&gt;% 
+  inner_join(data_cum, by = &quot;chr&quot;) %&gt;% 
+  mutate(bp_cum = start + bp_add)
+
+
+axis_set &lt;- gwas_data %&gt;% 
+  group_by(chr) %&gt;% 
+  summarize(center = mean(bp_cum))</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>ylim &lt;- gwas_data %&gt;% 
+  filter(pvalue == min(pvalue)) %&gt;% 
+  mutate(ylim = abs(floor(log10(pvalue))) + 2) %&gt;% 
+  pull(ylim)
+
+sig &lt;-  0.05/(5388)
+
+bmi_manhplot &lt;- ggplot(gwas_data, aes(x = bp_cum, y = -log10(pvalue), color = as_factor(chr), size = -log10(pvalue))) +
+  geom_hline(yintercept = -log10(sig), color = &quot;grey40&quot;, linetype = &quot;dashed&quot;) + 
+  geom_hline(yintercept = -log10(0.0001), color = &quot;red&quot;, linetype = &quot;dashed&quot;) + 
+  geom_point(alpha = 0.75, shape = ifelse((gwas_data$zscore &gt;= 4.863456), 17, ifelse(gwas_data$zscore &lt;= -4.863456, 25, 19)), fill = &quot;dodgerblue4&quot;) +
+#  geom_label_repel(aes(label=ifelse((pvalue &lt;=  sig &amp; gene_name %in% human_bmi_genes$rat_gene), gene_name, &quot;&quot;)), size = 6) + 
+  ylim(c(0,8)) + 
+  scale_x_continuous(label = axis_set$chr, breaks = axis_set$center) +
+  scale_color_manual(values = rep(c(&quot;dodgerblue4&quot;, &quot;midnightblue&quot;), unique(length(axis_set$chr)))) +
+  scale_size_continuous(range = c(0.5,3)) +
+  labs(x = NULL, 
+       y = expression(-log[10](italic(p)))) + 
+  theme_minimal() +
+  theme( 
+    legend.position = &quot;none&quot;,
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x = element_text(angle = 90, size = 12), 
+    axis.text.y = element_text( size = 12,  vjust = 0), 
+    axis.title = element_text(size = 20))
+
+bmi_manhplot</code></pre>
+<pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/Analyze_PrediXcan_Results.Rmd/plot%20manhattan%20for%20BMI-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>data_cum &lt;- height_manhat %&gt;% 
+  group_by(chr) %&gt;% 
+  summarise(max_bp = as.numeric(max(start))) %&gt;% 
+  mutate(bp_add = lag(cumsum(max_bp), default = 0)) %&gt;% 
+  select(chr, bp_add)</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>gwas_data &lt;- height_manhat %&gt;% 
+  inner_join(data_cum, by = &quot;chr&quot;) %&gt;% 
+  mutate(bp_cum = start + bp_add)
+
+
+axis_set &lt;- gwas_data %&gt;% 
+  group_by(chr) %&gt;% 
+  summarize(center = mean(bp_cum))</code></pre>
+<pre><code>`summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>ylim &lt;- gwas_data %&gt;% 
+  filter(pvalue == min(pvalue)) %&gt;% 
+  mutate(ylim = abs(floor(log10(pvalue))) + 2) %&gt;% 
+  pull(ylim)
+
+sig &lt;-   0.05/(5388)
+
+height_manhplot &lt;- ggplot(gwas_data, aes(x = bp_cum, y = -log10(pvalue), 
+                                  color = as_factor(chr), size = -log10(pvalue))) +
+  geom_hline(yintercept = -log10(sig), color = &quot;grey40&quot;, linetype = &quot;dashed&quot;) + 
+  geom_hline(yintercept = -log10(0.0001), color = &quot;red&quot;, linetype = &quot;dashed&quot;) + 
+  geom_point(alpha = 0.75, shape = ifelse((gwas_data$zscore &gt;= 4.863456), 17, ifelse(gwas_data$zscore &lt;= -4.863456, 25, 19)), fill = &quot;dodgerblue4&quot;) +
+#  geom_label_repel(aes(label=ifelse((pvalue &lt;=  sig &amp; gene_name %in% human_height_genes$rat_gene), gene_name, &quot;&quot;)), size = 6) + 
+  ylim(c(0,10)) + 
+  scale_x_continuous(label = axis_set$chr, breaks = axis_set$center) +
+  scale_color_manual(values = rep(c(&quot;dodgerblue4&quot;, &quot;midnightblue&quot;), unique(length(axis_set$chr)))) +
+  scale_size_continuous(range = c(0.5,3)) +
+  labs(x = NULL, 
+       y = expression(-log[10](italic(p)))) + 
+  theme_minimal() +
+  theme( 
+    legend.position = &quot;none&quot;,
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x = element_text(angle = 90, size = 12), 
+    axis.text.y = element_text( size = 12,  vjust = 0), 
+    axis.title = element_text(size = 20))
+
+height_manhplot</code></pre>
+<pre><code>Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/Analyze_PrediXcan_Results.Rmd/plot%20manhattan%20for%20height-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -771,33 +959,27 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] glmnet_4.1-3      Matrix_1.2-18     RSQLite_2.2.1     data.table_1.13.2
- [5] forcats_0.5.0     stringr_1.4.0     dplyr_1.0.2       purrr_0.3.4      
- [9] readr_1.4.0       tidyr_1.1.2       tibble_3.0.4      ggplot2_3.3.6    
-[13] tidyverse_1.3.0  
+ [1] ggrepel_0.9.1   forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [5] purrr_0.3.4     tidyr_1.1.2     tibble_3.0.4    ggplot2_3.3.6  
+ [9] tidyverse_1.3.0 readr_1.4.0    
 
 loaded via a namespace (and not attached):
- [1] fs_1.5.0          usethis_1.6.3     lubridate_1.7.9   devtools_2.3.2   
- [5] bit64_4.0.5       httr_1.4.2        rprojroot_1.3-2   tools_4.0.3      
- [9] backports_1.1.10  bslib_0.3.1       R6_2.4.1          DBI_1.1.0        
-[13] colorspace_1.4-1  withr_2.3.0       tidyselect_1.1.0  prettyunits_1.1.1
-[17] processx_3.4.4    curl_4.3          bit_4.0.4         compiler_4.0.3   
-[21] git2r_0.27.1      cli_3.3.0         rvest_0.3.6       xml2_1.3.2       
-[25] desc_1.2.0        sass_0.4.1        scales_1.1.1      callr_3.5.1      
-[29] digest_0.6.27     rmarkdown_2.14    pkgconfig_2.0.3   htmltools_0.5.2  
-[33] sessioninfo_1.1.1 dbplyr_1.4.4      fastmap_1.1.0     rlang_1.0.2      
-[37] readxl_1.3.1      rstudioapi_0.11   shape_1.4.6       jquerylib_0.1.4  
-[41] generics_0.0.2    jsonlite_1.7.1    magrittr_1.5      Rcpp_1.0.8.3     
-[45] munsell_0.5.0     lifecycle_0.2.0   stringi_1.5.3     whisker_0.4      
-[49] yaml_2.2.1        pkgbuild_1.1.0    grid_4.0.3        blob_1.2.1       
-[53] promises_1.1.1    crayon_1.3.4      lattice_0.20-41   haven_2.3.1      
-[57] splines_4.0.3     hms_0.5.3         knitr_1.39        ps_1.4.0         
-[61] pillar_1.4.6      codetools_0.2-16  pkgload_1.1.0     reprex_0.3.0     
-[65] glue_1.6.2        evaluate_0.15     remotes_2.2.0     modelr_0.1.8     
-[69] vctrs_0.4.1       httpuv_1.5.4      foreach_1.5.2     testthat_2.3.2   
-[73] cellranger_1.1.0  gtable_0.3.0      assertthat_0.2.1  xfun_0.31        
-[77] broom_0.8.0       later_1.1.0.1     survival_3.2-7    iterators_1.0.14 
-[81] memoise_1.1.0     workflowr_1.6.2   ellipsis_0.3.2   </code></pre>
+ [1] Rcpp_1.0.8.3     lubridate_1.7.9  assertthat_0.2.1 rprojroot_1.3-2 
+ [5] digest_0.6.27    utf8_1.1.4       R6_2.4.1         cellranger_1.1.0
+ [9] backports_1.1.10 reprex_0.3.0     evaluate_0.15    highr_0.8       
+[13] httr_1.4.2       pillar_1.4.6     rlang_1.0.2      readxl_1.3.1    
+[17] rstudioapi_0.11  jquerylib_0.1.4  blob_1.2.1       rmarkdown_2.14  
+[21] labeling_0.4.2   munsell_0.5.0    broom_0.8.0      compiler_4.0.3  
+[25] httpuv_1.5.4     modelr_0.1.8     xfun_0.31        pkgconfig_2.0.3 
+[29] htmltools_0.5.2  tidyselect_1.1.0 workflowr_1.6.2  fansi_0.4.1     
+[33] crayon_1.3.4     dbplyr_1.4.4     withr_2.3.0      later_1.1.0.1   
+[37] grid_4.0.3       jsonlite_1.7.1   gtable_0.3.0     lifecycle_0.2.0 
+[41] DBI_1.1.0        git2r_0.27.1     magrittr_1.5     scales_1.1.1    
+[45] cli_3.3.0        stringi_1.5.3    farver_2.0.3     fs_1.5.0        
+[49] promises_1.1.1   xml2_1.3.2       bslib_0.3.1      ellipsis_0.3.2  
+[53] generics_0.0.2   vctrs_0.4.1      tools_4.0.3      glue_1.6.2      
+[57] hms_0.5.3        fastmap_1.1.0    yaml_2.2.1       colorspace_1.4-1
+[61] rvest_0.3.6      knitr_1.39       haven_2.3.1      sass_0.4.1      </code></pre>
 </div>
 </div>
 

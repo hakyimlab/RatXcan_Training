@@ -385,7 +385,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-08-20
+<strong>Last updated:</strong> 2022-08-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -423,10 +423,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree4f1a0e2fec0e5412308aa53cad6499eef3769059targetblank4f1a0e2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree6e9507f7fb7392283002cf71abe3b55014df1d68targetblank6e9507fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/4f1a0e2fec0e5412308aa53cad6499eef3769059" target="_blank">4f1a0e2</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/6e9507f7fb7392283002cf71abe3b55014df1d68" target="_blank">6e9507f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree4f1a0e2fec0e5412308aa53cad6499eef3769059targetblank4f1a0e2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree6e9507f7fb7392283002cf71abe3b55014df1d68targetblank6e9507fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/4f1a0e2fec0e5412308aa53cad6499eef3769059" target="_blank">4f1a0e2</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/6e9507f7fb7392283002cf71abe3b55014df1d68" target="_blank">6e9507f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -555,21 +555,20 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/.Rhistory
+    Ignored:    output/
+    Ignored:    scripts/.Rhistory
 
 Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
-    Untracked:  README.html
-    Untracked:  analysis/EN_Prediction_Model.Rmd
-    Untracked:  analysis/PrediXcan.Rmd
-    Untracked:  analysis/Process_Geno_Gex_Data.Rmd
-    Untracked:  analysis/Rat_PTRS.Rmd
-    Untracked:  rsconnect/
-    Untracked:  scripts/
+    Untracked:  analysis/Analyze_PrediXcan_Results.Rmd
 
 Unstaged changes:
-    Modified:   code/.DS_Store
-    Deleted:    output/README.md
+    Modified:   analysis/.DS_Store
+    Modified:   analysis/EN_Prediction_Model.Rmd
+    Modified:   analysis/Rat_PTRS.Rmd
+    Modified:   analysis/Run_PrediXcan.Rmd
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -584,10 +583,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/EN_Prediction_Model.Rmd</code>)
+and HTML (<code>docs/EN_Prediction_Model.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/3dc873d354695800ed363e4e5e13acc734280a6f/analysis/EN_Prediction_Model.Rmd" target="_blank">3dc873d</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-20
+</td>
+<td>
+copy over documentation from Rat Genomics Paper Pipeline
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/3dc873d354695800ed363e4e5e13acc734280a6f/docs/EN_Prediction_Model.html" target="_blank">3dc873d</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-20
+</td>
+<td>
+copy over documentation from Rat Genomics Paper Pipeline
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -649,8 +712,8 @@ interpret expression variability.</p>
 <pre class="bash"><code>#Splitting the genotype file by chromosome - run this from the rat_genomic_alaysis directory
 python scripts/split_genotype_by_chr.py data/genotype.txt data/geno_by_chr/genotype</code></pre>
 </div>
-<div id="covariate-files" class="section level1">
-<h1>Covariate Files</h1>
+<div id="covariate-files" class="section level2">
+<h2>Covariate Files</h2>
 <p>We analyze sex, batch number, and batch center, as possible
 covariates, along with the 7 PEER factors. Start by loading gene
 expression data and phenotype data.</p>
@@ -658,7 +721,7 @@ expression data and phenotype data.</p>
 
 gexAc_transpose &lt;- read.table( base.dir %&amp;% &quot;data/gexAc.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE)
 gexIl_transpose &lt;- read.table( base.dir %&amp;% &quot;data/gexIl.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE)
-gexLh_transpose &lt;- read.table( base.dir %&amp;% &quot;/data/gexLh.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE)
+gexLh_transpose &lt;- read.table( base.dir %&amp;% &quot;data/gexLh.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE)
 gexPl_transpose &lt;- read.table(base.dir %&amp;% &quot;data/gexPl.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE)
 gexVo_transpose &lt;- read.table(base.dir %&amp;% &quot;data/gexVo.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE)</code></pre>
 <p>We selecting sex, batch number, and batch center from the phenotype
@@ -678,8 +741,8 @@ covariate file and eventually regressed out of the expression files.</p>
 <pre class="r"><code>peer_factorsAc = read.csv(file = base.dir %&amp;% &quot;peer_Ac/X.csv&quot;, header = FALSE)
 peer_factorsIl = read.csv(file = base.dir %&amp;% &quot;peer_Il/X.csv&quot;, header = FALSE)
 peer_factorsLh = read.csv(file = base.dir %&amp;% &quot;peer_Lh/X.csv&quot;, header = FALSE)
-peer_factorsPl = read.csv(file = base.dir %&amp;% &quot;/peer_Pl/X.csv&quot;, header = FALSE)
-peer_factorsVo = read.csv(file = base.dir %&amp;% &quot;/peer_Vo/X.csv&quot;, header = FALSE)</code></pre>
+peer_factorsPl = read.csv(file = base.dir %&amp;% &quot;peer_Pl/X.csv&quot;, header = FALSE)
+peer_factorsVo = read.csv(file = base.dir %&amp;% &quot;peer_Vo/X.csv&quot;, header = FALSE)</code></pre>
 <p>For each tissue’s PEER factor output, set individual IDs as rownames
 and enumerate the PEER factors in the columns.</p>
 <pre class="r"><code># Manipulating the PEER factor files so we can append to covariate file
@@ -776,8 +839,8 @@ for(l in snp_files) {
 <pre class="r"><code># Saving the gene annotation RDS object to be used as an argument in the script
 saveRDS(gene_annotation, base.dir %&amp;% &quot;data/gene_annotation.RDS&quot;)</code></pre>
 </div>
-<div id="metadata-files" class="section level1">
-<h1>Metadata Files</h1>
+<div id="metadata-files" class="section level2">
+<h2>Metadata Files</h2>
 <pre class="bash"><code># Creating the meta data file for each tissue 
 cd $DIR
 python scripts/create_meta_data.py --geno &quot;data/genotype.txt&quot; --expr &quot;Ac_expression_transformed.tsv&quot; --alpha 1 --snpset &quot;1KG&quot; --rsid_label 1 --window 1000000 --out_prefix &quot;Results/allMetaData/Ac&quot;
@@ -859,16 +922,16 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8.3     rstudioapi_0.11  knitr_1.39       magrittr_1.5    
- [5] workflowr_1.6.2  R6_2.4.1         rlang_1.0.2      fastmap_1.1.0   
- [9] stringr_1.4.0    tools_4.0.3      xfun_0.31        cli_3.3.0       
-[13] git2r_0.27.1     jquerylib_0.1.4  htmltools_0.5.2  ellipsis_0.3.2  
-[17] rprojroot_1.3-2  yaml_2.2.1       digest_0.6.27    tibble_3.0.4    
-[21] lifecycle_0.2.0  crayon_1.3.4     later_1.1.0.1    sass_0.4.1      
-[25] vctrs_0.4.1      fs_1.5.0         promises_1.1.1   glue_1.6.2      
-[29] evaluate_0.15    rmarkdown_2.14   stringi_1.5.3    compiler_4.0.3  
-[33] bslib_0.3.1      pillar_1.4.6     backports_1.1.10 jsonlite_1.7.1  
-[37] httpuv_1.5.4     pkgconfig_2.0.3 </code></pre>
+ [1] Rcpp_1.0.8.3     rstudioapi_0.11  whisker_0.4      knitr_1.39      
+ [5] magrittr_1.5     workflowr_1.6.2  R6_2.4.1         rlang_1.0.2     
+ [9] fastmap_1.1.0    stringr_1.4.0    tools_4.0.3      xfun_0.31       
+[13] cli_3.3.0        git2r_0.27.1     jquerylib_0.1.4  htmltools_0.5.2 
+[17] ellipsis_0.3.2   rprojroot_1.3-2  yaml_2.2.1       digest_0.6.27   
+[21] tibble_3.0.4     lifecycle_0.2.0  crayon_1.3.4     later_1.1.0.1   
+[25] sass_0.4.1       vctrs_0.4.1      fs_1.5.0         promises_1.1.1  
+[29] glue_1.6.2       evaluate_0.15    rmarkdown_2.14   stringi_1.5.3   
+[33] compiler_4.0.3   bslib_0.3.1      pillar_1.4.6     backports_1.1.10
+[37] jsonlite_1.7.1   httpuv_1.5.4     pkgconfig_2.0.3 </code></pre>
 </div>
 </div>
 

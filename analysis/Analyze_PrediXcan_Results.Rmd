@@ -1,0 +1,201 @@
+---
+title: "Analyze_PrediXcan_Results"
+author: "sabrina-mi"
+date: "2022-08-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+## Identify Significant Genes
+
+```{r variables}
+library(readr)
+library(tidyverse)
+tis="Ac"
+"%&%" = function(a,b) paste(a,b,sep="")
+dir="/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/"
+
+```
+
+Read in association results for each phenotype, and combine in one dataframe.
+
+```{r format prediXcan assocs}
+library(stringr)
+filelist <- list.files(dir %&% "Results/PrediXcan/metabolic_traits", pattern = "Ac__association_", full.names = TRUE)
+full_df <- data.frame()
+
+for(file in filelist) {
+  assoc_file <- read_tsv(file, col_names = TRUE)
+  # extract phenotype from regex matching in file name
+  pheno_id <- str_match(file, "association_(.*?).txt")[,2]
+  tempo <- cbind(assoc_file, metabolic_trait=pheno_id) %>% select(-c(status))
+  full_df <- rbind(full_df, tempo)
+} 
+
+```
+
+We first filter for all significant genes for any of the 10 phenotypes. The last two lines of the chunk count the number of traits each gene is significantly associated with and the number of significant genes for each trait. 
+
+```{r significant genes}
+#full_df <- read_tsv("/Users/natashasanthanam/Github/rat-genomic-analysis/data/rat_metabolic_traits_best_Ac_full_assocs.txt", col_names = TRUE)
+
+tempo_df <- full_df %>% filter(pvalue <  9.279881e-06)
+
+#428 sig genes
+tempo_df %>% group_by(gene) %>% summarise(n = n())
+
+#all 11 traits
+tempo_df %>% group_by(metabolic_trait) %>% summarise(n = n())
+```
+
+# Plot Association Results
+
+The `orth.rats` file gives a dictionary between human genes and the corresponding gene in rats, queried from the [Biomart database](https://lab-notes.hakyimlab.org/post/2022/06/28/query-gene-annotations-from-biomart/). 
+
+In the following chunk, we use it to annotate our dataframe with gene symbols. Then we replace metabolic trait names and add a column marking all the significant genes.
+```{r}
+orth.rats <- read_tsv(dir %&% "data/expression/ortholog_genes_rats_humans.tsv")
+full_df <- full_df %>% filter(metabolic_trait == "bmi_bodylength_w_tail" | metabolic_trait ==  "bodylength_w_tail"| metabolic_trait == "bodyweight" | metabolic_trait == "fasting_glucose" | metabolic_trait == "epifat" |  metabolic_trait == "retrofat" | metabolic_trait == "parafat")
+
+full_df <- full_df %>% mutate(gene_name = orth.rats[match(full_df$gene, orth.rats$rnorvegicus_homolog_ensembl_gene),4]$rnorvegicus_homolog_associated_gene_name, .before = effect)
+
+full_df$metabolic_trait[full_df$metabolic_trait == "bmi_bodylength_w_tail" ] <- "Body Mass Index (BMI) with tail"
+full_df$metabolic_trait[full_df$metabolic_trait == "bodylength_w_tail" ] <- "Body length including tail"
+full_df$metabolic_trait[full_df$metabolic_trait == "bodyweight" ] <- "Body weight"
+full_df$metabolic_trait[full_df$metabolic_trait == "fasting_glucose" ] <- "Fasting Glucose"
+full_df$metabolic_trait[full_df$metabolic_trait == "epifat" ] <- "Epididymal fat"
+full_df$metabolic_trait[full_df$metabolic_trait == "retrofat" ] <- "Retroperitoneal fat"
+full_df$metabolic_trait[full_df$metabolic_trait == "parafat" ] <- "Parametrial fat"
+
+full_df <- full_df %>% mutate(bf_sig = ifelse(full_df$pvalue <= 9.279881e-06, "Yes", "No"))
+```
+
+We add loci information and separate results for each phenotype.
+
+```{r plot prediXcan results as miami plot divided per trait}
+gene_annot <- readRDS(dir %&% "data/gene_annotation.RDS") %>% select(c("chr", "gene_id", "start", "end")) %>% rename(gene = gene_id)
+
+tempo_manhatt <- inner_join(gene_annot, full_df, by = "gene")
+tempo_manhatt$chr <- as.numeric(tempo_manhatt$chr)
+
+bmi_manhat <- tempo_manhatt %>% filter(metabolic_trait == "Body Mass Index (BMI) with tail") 
+bmi_manhat <- bmi_manhat %>% mutate(gene_name = orth.rats[match(bmi_manhat$gene, orth.rats$rnorvegicus_homolog_ensembl_gene), 4]$rnorvegicus_homolog_associated_gene_name)
+
+height_manhat <- tempo_manhatt %>% filter(metabolic_trait == "Body length including tail") 
+height_manhat <- height_manhat %>% mutate(gene_name = orth.rats[match(height_manhat$gene, orth.rats$rnorvegicus_homolog_ensembl_gene), 4]$rnorvegicus_homolog_associated_gene_name)
+```
+
+Note: I'm not sure where to find the `Human_phenomeXcan_all_traits.txt` file, but I assume it is a dictionary for human genes significantly associated to a set of phenotypes and their homologous rat genes. Until I find out how this file was queried, we skip this step and continue to the Manhattan plots. In any case, we have all the data we need to generate the plots, we only reference the human genes to label some of the significant genes in the figure.
+
+```{r find genes that overlap in Humans, eval=FALSE}
+human_height_genes <- read_tsv("/Users/natashasanthanam/Downloads/Human_phenomeXcan_all_traits.txt", col_names = TRUE)
+human_height_genes <- human_height_genes %>% mutate(rat_gene = orth.rats[match(human_height_genes$gene_name, orth.rats$external_gene_name), 4]$rnorvegicus_homolog_associated_gene_name) %>% filter(pvalue_Height <= 0.01)
+
+
+human_bmi_genes <- read_tsv("/Users/natashasanthanam/Downloads/Human_phenomeXcan_all_traits.txt", col_names = TRUE) 
+colnames(human_bmi_genes)[2] = "pvalue_BMI"
+human_bmi_genes <- human_bmi_genes %>% mutate(rat_gene = orth.rats[match(human_bmi_genes$gene_name, orth.rats$external_gene_name), 4]$rnorvegicus_homolog_associated_gene_name) %>% filter(pvalue_BMI <= 0.01 )
+```
+
+Generate Manhattan plots for BMI and height. If you wanted to add labels for human genes, you can uncomment the `geom_label_repel` line.
+
+```{r plot manhattan for BMI}
+library(ggrepel)
+data_cum <- bmi_manhat %>% 
+  group_by(chr) %>% 
+  summarise(max_bp = as.numeric(max(start))) %>% 
+  mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>% 
+  select(chr, bp_add)
+
+gwas_data <- bmi_manhat %>% 
+  inner_join(data_cum, by = "chr") %>% 
+  mutate(bp_cum = start + bp_add)
+
+
+axis_set <- gwas_data %>% 
+  group_by(chr) %>% 
+  summarize(center = mean(bp_cum))
+
+ylim <- gwas_data %>% 
+  filter(pvalue == min(pvalue)) %>% 
+  mutate(ylim = abs(floor(log10(pvalue))) + 2) %>% 
+  pull(ylim)
+
+sig <-  0.05/(5388)
+
+bmi_manhplot <- ggplot(gwas_data, aes(x = bp_cum, y = -log10(pvalue), color = as_factor(chr), size = -log10(pvalue))) +
+  geom_hline(yintercept = -log10(sig), color = "grey40", linetype = "dashed") + 
+  geom_hline(yintercept = -log10(0.0001), color = "red", linetype = "dashed") + 
+  geom_point(alpha = 0.75, shape = ifelse((gwas_data$zscore >= 4.863456), 17, ifelse(gwas_data$zscore <= -4.863456, 25, 19)), fill = "dodgerblue4") +
+#  geom_label_repel(aes(label=ifelse((pvalue <=  sig & gene_name %in% human_bmi_genes$rat_gene), gene_name, "")), size = 6) + 
+  ylim(c(0,8)) + 
+  scale_x_continuous(label = axis_set$chr, breaks = axis_set$center) +
+  scale_color_manual(values = rep(c("dodgerblue4", "midnightblue"), unique(length(axis_set$chr)))) +
+  scale_size_continuous(range = c(0.5,3)) +
+  labs(x = NULL, 
+       y = expression(-log[10](italic(p)))) + 
+  theme_minimal() +
+  theme( 
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x = element_text(angle = 90, size = 12), 
+    axis.text.y = element_text( size = 12,  vjust = 0), 
+    axis.title = element_text(size = 20))
+
+bmi_manhplot
+```
+
+
+```{r plot manhattan for height}
+data_cum <- height_manhat %>% 
+  group_by(chr) %>% 
+  summarise(max_bp = as.numeric(max(start))) %>% 
+  mutate(bp_add = lag(cumsum(max_bp), default = 0)) %>% 
+  select(chr, bp_add)
+
+gwas_data <- height_manhat %>% 
+  inner_join(data_cum, by = "chr") %>% 
+  mutate(bp_cum = start + bp_add)
+
+
+axis_set <- gwas_data %>% 
+  group_by(chr) %>% 
+  summarize(center = mean(bp_cum))
+
+ylim <- gwas_data %>% 
+  filter(pvalue == min(pvalue)) %>% 
+  mutate(ylim = abs(floor(log10(pvalue))) + 2) %>% 
+  pull(ylim)
+
+sig <-   0.05/(5388)
+
+height_manhplot <- ggplot(gwas_data, aes(x = bp_cum, y = -log10(pvalue), 
+                                  color = as_factor(chr), size = -log10(pvalue))) +
+  geom_hline(yintercept = -log10(sig), color = "grey40", linetype = "dashed") + 
+  geom_hline(yintercept = -log10(0.0001), color = "red", linetype = "dashed") + 
+  geom_point(alpha = 0.75, shape = ifelse((gwas_data$zscore >= 4.863456), 17, ifelse(gwas_data$zscore <= -4.863456, 25, 19)), fill = "dodgerblue4") +
+#  geom_label_repel(aes(label=ifelse((pvalue <=  sig & gene_name %in% human_height_genes$rat_gene), gene_name, "")), size = 6) + 
+  ylim(c(0,10)) + 
+  scale_x_continuous(label = axis_set$chr, breaks = axis_set$center) +
+  scale_color_manual(values = rep(c("dodgerblue4", "midnightblue"), unique(length(axis_set$chr)))) +
+  scale_size_continuous(range = c(0.5,3)) +
+  labs(x = NULL, 
+       y = expression(-log[10](italic(p)))) + 
+  theme_minimal() +
+  theme( 
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.text.x = element_text(angle = 90, size = 12), 
+    axis.text.y = element_text( size = 12,  vjust = 0), 
+    axis.title = element_text(size = 20))
+
+height_manhplot
+```
+
+

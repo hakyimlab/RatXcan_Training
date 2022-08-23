@@ -67,7 +67,7 @@ This python script separates the genotype file by chromosome.
 #Splitting the genotype file by chromosome - run this from the rat_genomic_alaysis directory
 python scripts/split_genotype_by_chr.py data/genotype.txt data/geno_by_chr/genotype
 ```
-# Covariate Files
+## Covariate Files
 We analyze sex, batch number, and batch center, as possible covariates, along with the 7 PEER factors. Start by loading gene expression data and phenotype data.
 
 ```{r load gene expression and phenotype data, eval=FALSE}
@@ -75,7 +75,7 @@ load("~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Final
 
 gexAc_transpose <- read.table( base.dir %&% "data/gexAc.csv", sep = ",", col.names = TRUE, row.names = FALSE)
 gexIl_transpose <- read.table( base.dir %&% "data/gexIl.csv", sep = ",", col.names = TRUE, row.names = FALSE)
-gexLh_transpose <- read.table( base.dir %&% "/data/gexLh.csv", sep = ",", col.names = TRUE, row.names = FALSE)
+gexLh_transpose <- read.table( base.dir %&% "data/gexLh.csv", sep = ",", col.names = TRUE, row.names = FALSE)
 gexPl_transpose <- read.table(base.dir %&% "data/gexPl.csv", sep = ",", col.names = TRUE, row.names = FALSE)
 gexVo_transpose <- read.table(base.dir %&% "data/gexVo.csv", sep = ",", col.names = TRUE, row.names = FALSE)
 ```
@@ -102,8 +102,8 @@ Now we read the PEER factor output files to be appended to the covariate file an
 peer_factorsAc = read.csv(file = base.dir %&% "peer_Ac/X.csv", header = FALSE)
 peer_factorsIl = read.csv(file = base.dir %&% "peer_Il/X.csv", header = FALSE)
 peer_factorsLh = read.csv(file = base.dir %&% "peer_Lh/X.csv", header = FALSE)
-peer_factorsPl = read.csv(file = base.dir %&% "/peer_Pl/X.csv", header = FALSE)
-peer_factorsVo = read.csv(file = base.dir %&% "/peer_Vo/X.csv", header = FALSE)
+peer_factorsPl = read.csv(file = base.dir %&% "peer_Pl/X.csv", header = FALSE)
+peer_factorsVo = read.csv(file = base.dir %&% "peer_Vo/X.csv", header = FALSE)
 ```
 For each tissue's PEER factor output, set individual IDs as rownames and enumerate the PEER factors in the columns.
 
@@ -220,7 +220,7 @@ for(l in snp_files) {
 saveRDS(gene_annotation, base.dir %&% "data/gene_annotation.RDS")
 ```
 
-# Metadata Files
+## Metadata Files
 
 
 ```{bash, eval=FALSE}
