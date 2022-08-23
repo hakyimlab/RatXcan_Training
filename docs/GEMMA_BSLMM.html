@@ -13,7 +13,7 @@
 
 <meta name="date" content="2022-08-09" />
 
-<title>Rat_Heritability</title>
+<title>Estimate Rat Heritability and Sparsity</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -354,7 +354,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Rat_Heritability</h1>
+<h1 class="title toc-ignore">Estimate Rat Heritability and Sparsity</h1>
 <h4 class="author">sabrina-mi</h4>
 <h4 class="date">2022-08-09</h4>
 
@@ -364,7 +364,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -375,8 +375,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -385,13 +385,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-08-19
+<strong>Last updated:</strong> 2022-08-22
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>RatXcan_Training/</code> <span
@@ -414,18 +414,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -516,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree362ebdeb9b327915a4688cea605218346306f767targetblank362ebdea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree3902557023b0fb85bef5d0a7c5f1bcbdc0d8292btargetblank3902557a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/362ebdeb9b327915a4688cea605218346306f767" target="_blank">362ebde</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b" target="_blank">3902557</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree362ebdeb9b327915a4688cea605218346306f767targetblank362ebdea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree3902557023b0fb85bef5d0a7c5f1bcbdc0d8292btargetblank3902557a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -534,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/362ebdeb9b327915a4688cea605218346306f767" target="_blank">362ebde</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b" target="_blank">3902557</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -552,16 +555,20 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/.Rhistory
+    Ignored:    output/
+    Ignored:    scripts/.Rhistory
 
 Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
-    Untracked:  README.html
-    Untracked:  rsconnect/
 
 Unstaged changes:
-    Modified:   code/.DS_Store
-    Deleted:    output/README.md
+    Modified:   analysis/Analyze_PrediXcan_Results.Rmd
+    Modified:   analysis/EN_Prediction_Model.Rmd
+    Modified:   analysis/GEMMA_BSLMM.Rmd
+    Modified:   analysis/Plot_Correlations.Rmd
+    Modified:   analysis/Run_PrediXcan.Rmd
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -607,6 +614,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/4f1a0e2fec0e5412308aa53cad6499eef3769059/docs/GEMMA_BSLMM.html" target="_blank">4f1a0e2</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-19
+</td>
+<td>
+forgot to add html
+</td>
+</tr>
 <tr>
 <td>
 Rmd

@@ -13,7 +13,7 @@
 
 <meta name="date" content="2022-08-19" />
 
-<title>Rat_PTRS</title>
+<title>Predict Rat Traits with PTRS</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -354,7 +354,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Rat_PTRS</h1>
+<h1 class="title toc-ignore">Predict Rat Traits with PTRS</h1>
 <h4 class="author">sabrina-mi</h4>
 <h4 class="date">2022-08-19</h4>
 
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree6e9507f7fb7392283002cf71abe3b55014df1d68targetblank6e9507fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree3902557023b0fb85bef5d0a7c5f1bcbdc0d8292btargetblank3902557a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/6e9507f7fb7392283002cf71abe3b55014df1d68" target="_blank">6e9507f</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b" target="_blank">3902557</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree6e9507f7fb7392283002cf71abe3b55014df1d68targetblank6e9507fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree3902557023b0fb85bef5d0a7c5f1bcbdc0d8292btargetblank3902557a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/6e9507f7fb7392283002cf71abe3b55014df1d68" target="_blank">6e9507f</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b" target="_blank">3902557</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -561,11 +561,12 @@ Ignored files:
 Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
-    Untracked:  analysis/Analyze_PrediXcan_Results.Rmd
 
 Unstaged changes:
-    Modified:   analysis/.DS_Store
+    Modified:   analysis/Analyze_PrediXcan_Results.Rmd
     Modified:   analysis/EN_Prediction_Model.Rmd
+    Modified:   analysis/GEMMA_BSLMM.Rmd
+    Modified:   analysis/Plot_Correlations.Rmd
     Modified:   analysis/Rat_PTRS.Rmd
     Modified:   analysis/Run_PrediXcan.Rmd
     Modified:   analysis/index.Rmd
@@ -619,6 +620,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b/analysis/Rat_PTRS.Rmd" target="_blank">3902557</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-22
+</td>
+<td>
+add analyze predixcan result
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b/docs/Rat_PTRS.html" target="_blank">3902557</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-22
+</td>
+<td>
+add analyze predixcan result
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/sabrina-mi/RatXcan_Training/blob/3dc873d354695800ed363e4e5e13acc734280a6f/analysis/Rat_PTRS.Rmd" target="_blank">3dc873d</a>
 </td>
 <td>
@@ -657,43 +692,14 @@ copy over documentation from Rat Genomics Paper Pipeline
 </div>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-✔ tibble  3.0.4     ✔ dplyr   1.0.2
-✔ tidyr   1.1.2     ✔ stringr 1.4.0
-✔ readr   1.4.0     ✔ forcats 0.5.0</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(data.table)</code></pre>
-<pre><code>
-Attaching package: &#39;data.table&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
-
-    between, first, last</code></pre>
-<pre><code>The following object is masked from &#39;package:purrr&#39;:
-
-    transpose</code></pre>
-<pre class="r"><code>library(RSQLite)
-library(glmnet)</code></pre>
-<pre><code>Loading required package: Matrix</code></pre>
-<pre><code>
-Attaching package: &#39;Matrix&#39;</code></pre>
-<pre><code>The following objects are masked from &#39;package:tidyr&#39;:
-
-    expand, pack, unpack</code></pre>
-<pre><code>Loaded glmnet 4.1-3</code></pre>
-<pre class="r"><code>&quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
-devtools::source_gist(&quot;ee5f67abddd0b761ee24410ea71c41aa&quot;)</code></pre>
-<pre><code>Sourcing https://gist.githubusercontent.com/natashasanthanam/ee5f67abddd0b761ee24410ea71c41aa/raw/185ab37e5a31f1d3bab1530e468950e30ff31337/fn_generate_trait.R</code></pre>
-<pre><code>SHA-1 hash of file is c56941964697a118c351c3f81322a221fa13a1b3</code></pre>
-<pre class="r"><code>devtools::source_gist(&quot;38431b74c6c0bf90c12f&quot;)</code></pre>
-<pre><code>Sourcing https://gist.githubusercontent.com/hakyim/38431b74c6c0bf90c12f/raw/f16d9de559d20ce605e1e13eee75e82a0f6e1507/qqunif.R</code></pre>
-<pre><code>SHA-1 hash of file is c5aba9ddce06b95125b727d96bffe7bd1557fcc3</code></pre>
-<pre class="r"><code>devtools::source_gist(&quot;1e9053c8f35c30396429350a08f33ea7&quot;)</code></pre>
-<pre><code>Sourcing https://gist.githubusercontent.com/natashasanthanam/1e9053c8f35c30396429350a08f33ea7/raw/e35c8cabb742f17f1998f9ac4198878f9c683605/qqunif.R</code></pre>
-<pre><code>SHA-1 hash of file is 7388784ab8c7c2dc5c3f950dc8a47a1c76e3d7ac</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(data.table)
+library(RSQLite)
+library(glmnet)
+&quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
+devtools::source_gist(&quot;ee5f67abddd0b761ee24410ea71c41aa&quot;)
+devtools::source_gist(&quot;38431b74c6c0bf90c12f&quot;)
+devtools::source_gist(&quot;1e9053c8f35c30396429350a08f33ea7&quot;)</code></pre>
 <p>Yanyu’s PTRS weights estimate the effect of genes on a given trait,
 in this case we pick height and BMI.</p>
 <pre class="r"><code>traits &lt;- c(&quot;height&quot;, &quot;bmi&quot;)
@@ -770,34 +776,17 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
- [1] glmnet_4.1-3      Matrix_1.2-18     RSQLite_2.2.1     data.table_1.13.2
- [5] forcats_0.5.0     stringr_1.4.0     dplyr_1.0.2       purrr_0.3.4      
- [9] readr_1.4.0       tidyr_1.1.2       tibble_3.0.4      ggplot2_3.3.6    
-[13] tidyverse_1.3.0  
-
 loaded via a namespace (and not attached):
- [1] fs_1.5.0          usethis_1.6.3     lubridate_1.7.9   devtools_2.3.2   
- [5] bit64_4.0.5       httr_1.4.2        rprojroot_1.3-2   tools_4.0.3      
- [9] backports_1.1.10  bslib_0.3.1       R6_2.4.1          DBI_1.1.0        
-[13] colorspace_1.4-1  withr_2.3.0       tidyselect_1.1.0  prettyunits_1.1.1
-[17] processx_3.4.4    curl_4.3          bit_4.0.4         compiler_4.0.3   
-[21] git2r_0.27.1      cli_3.3.0         rvest_0.3.6       xml2_1.3.2       
-[25] desc_1.2.0        sass_0.4.1        scales_1.1.1      callr_3.5.1      
-[29] digest_0.6.27     rmarkdown_2.14    pkgconfig_2.0.3   htmltools_0.5.2  
-[33] sessioninfo_1.1.1 dbplyr_1.4.4      fastmap_1.1.0     rlang_1.0.2      
-[37] readxl_1.3.1      rstudioapi_0.11   shape_1.4.6       jquerylib_0.1.4  
-[41] generics_0.0.2    jsonlite_1.7.1    magrittr_1.5      Rcpp_1.0.8.3     
-[45] munsell_0.5.0     lifecycle_0.2.0   stringi_1.5.3     whisker_0.4      
-[49] yaml_2.2.1        pkgbuild_1.1.0    grid_4.0.3        blob_1.2.1       
-[53] promises_1.1.1    crayon_1.3.4      lattice_0.20-41   haven_2.3.1      
-[57] splines_4.0.3     hms_0.5.3         knitr_1.39        ps_1.4.0         
-[61] pillar_1.4.6      codetools_0.2-16  pkgload_1.1.0     reprex_0.3.0     
-[65] glue_1.6.2        evaluate_0.15     remotes_2.2.0     modelr_0.1.8     
-[69] vctrs_0.4.1       httpuv_1.5.4      foreach_1.5.2     testthat_2.3.2   
-[73] cellranger_1.1.0  gtable_0.3.0      assertthat_0.2.1  xfun_0.31        
-[77] broom_0.8.0       later_1.1.0.1     survival_3.2-7    iterators_1.0.14 
-[81] memoise_1.1.0     workflowr_1.6.2   ellipsis_0.3.2   </code></pre>
+ [1] Rcpp_1.0.8.3     rstudioapi_0.11  whisker_0.4      knitr_1.39      
+ [5] magrittr_1.5     workflowr_1.6.2  R6_2.4.1         rlang_1.0.2     
+ [9] fastmap_1.1.0    stringr_1.4.0    tools_4.0.3      xfun_0.31       
+[13] cli_3.3.0        git2r_0.27.1     jquerylib_0.1.4  htmltools_0.5.2 
+[17] ellipsis_0.3.2   rprojroot_1.3-2  yaml_2.2.1       digest_0.6.27   
+[21] tibble_3.0.4     lifecycle_0.2.0  crayon_1.3.4     later_1.1.0.1   
+[25] sass_0.4.1       vctrs_0.4.1      fs_1.5.0         promises_1.1.1  
+[29] glue_1.6.2       evaluate_0.15    rmarkdown_2.14   stringi_1.5.3   
+[33] compiler_4.0.3   bslib_0.3.1      pillar_1.4.6     backports_1.1.10
+[37] jsonlite_1.7.1   httpuv_1.5.4     pkgconfig_2.0.3 </code></pre>
 </div>
 </div>
 

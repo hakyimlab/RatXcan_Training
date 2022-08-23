@@ -1,5 +1,5 @@
 ---
-title: "Rat_PTRS"
+title: "Predict Rat Traits with PTRS"
 author: "sabrina-mi"
 date: "2022-08-19"
 output: workflowr::wflow_html
@@ -9,7 +9,7 @@ editor_options:
 
 ## Setup
 
-```{r setup}
+```{r setup, eval=FALSE}
 library(tidyverse)
 library(data.table)
 library(RSQLite)

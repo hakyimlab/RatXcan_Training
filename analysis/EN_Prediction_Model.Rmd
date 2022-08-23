@@ -1,5 +1,5 @@
 ---
-title: "EN_Prediction_Model"
+title: "Generate EN Prediction Models"
 author: "sabrina-mi"
 date: "2022-08-19"
 output: workflowr::wflow_html

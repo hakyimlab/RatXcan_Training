@@ -1,5 +1,5 @@
 ---
-title: "Analyze_PrediXcan_Results"
+title: "Analyze PrediXcan Results"
 author: "sabrina-mi"
 date: "2022-08-22"
 output: workflowr::wflow_html

@@ -1,5 +1,5 @@
 ---
-title: "Rat_Heritability"
+title: "Estimate Rat Heritability and Sparsity"
 author: "sabrina-mi"
 date: "2022-08-09"
 output: workflowr::wflow_html

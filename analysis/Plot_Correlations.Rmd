@@ -1,5 +1,5 @@
 ---
-title: "Plot_Correlations"
+title: "Plot Correlations Between Predicted and Observed Traits"
 author: "sabrina-mi"
 date: "2022-07-11"
 output: workflowr::wflow_html
@@ -18,11 +18,11 @@ devtools::source_gist("ee5f67abddd0b761ee24410ea71c41aa")
 devtools::source_gist("38431b74c6c0bf90c12f")
 devtools::source_gist("1e9053c8f35c30396429350a08f33ea7")
 
-data.dir <- "/Users/sabrinami/Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/data/"
+data.dir <- "/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/data/"
 ```
 
 
-```{r input}
+```{r}
 traits <- c("height")
 
 ```

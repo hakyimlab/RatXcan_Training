@@ -1,5 +1,5 @@
 ---
-title: "Run_PrediXcan"
+title: "Run PrediXcan"
 author: "sabrina-mi"
 date: "2022-08-19"
 output: workflowr::wflow_html
