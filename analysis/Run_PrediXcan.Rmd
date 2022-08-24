@@ -11,7 +11,7 @@ editor_options:
 
 Predict gene expression using elastic net model trained on Ac tissue data.
 
-```{bash run prediXcan, eval = FALSE}
+```{bash definitions, eval = FALSE}
 conda activate imlabtools
 # The path to Box drive is usually ~/Box, but may be different depending on operating system and Box Drive version
 DIR=/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline
@@ -19,8 +19,10 @@ DIR=/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Gen
 METAXCAN=/Users/sabrinami/Github/MetaXcan/software
 GENO=$DIR/data/rat_genotypes_LD_pruned_0.95
 MODEL=$DIR/Results/sql
-OUTPUT=$DIR/Results/PrediXcan/metabolic_traits/
+OUTPUT=$DIR/Results/PrediXcan/metabolic_traits
+```
 
+```{bash run predict, eval=FALSE}
 python $METAXCAN/Predict.py \
 --model_db_path $MODEL/Ac_best_prediXcan_db.db \
 --text_genotypes \
@@ -30,6 +32,47 @@ python $METAXCAN/Predict.py \
 --prediction_output $OUTPUT/rat_metabolic_Ac_best__predict.txt  \
 --prediction_summary_output $OUTPUT/rat_metabolic_Ac_best__summary.txt \
 --throw
+
+python $METAXCAN/Predict.py \
+--model_db_path $MODEL/Il_best_prediXcan_db.db \
+--text_genotypes \
+ $GENO/chr*.round2_impute2_3473.txt  \
+--on_the_fly_mapping METADATA "{}_{}_{}_{}" \
+--text_sample_ids $GENO/samples_Rat_metab_phenos_file \
+--prediction_output $OUTPUT/rat_metabolic_Il_best__predict.txt  \
+--prediction_summary_output $OUTPUT/rat_metabolic_Il_best__summary.txt \
+--throw
+
+python $METAXCAN/Predict.py \
+--model_db_path $MODEL/Lh_best_prediXcan_db.db \
+--text_genotypes \
+ $GENO/chr*.round2_impute2_3473.txt  \
+--on_the_fly_mapping METADATA "{}_{}_{}_{}" \
+--text_sample_ids $GENO/samples_Rat_metab_phenos_file \
+--prediction_output $OUTPUT/rat_metabolic_Lh_best__predict.txt  \
+--prediction_summary_output $OUTPUT/rat_metabolic_Lh_best__summary.txt \
+--throw
+
+python $METAXCAN/Predict.py \
+--model_db_path $MODEL/Pl_best_prediXcan_db.db \
+--text_genotypes \
+ $GENO/chr*.round2_impute2_3473.txt  \
+--on_the_fly_mapping METADATA "{}_{}_{}_{}" \
+--text_sample_ids $GENO/samples_Rat_metab_phenos_file \
+--prediction_output $OUTPUT/rat_metabolic_Pl_best__predict.txt  \
+--prediction_summary_output $OUTPUT/rat_metabolic_Pl_best__summary.txt \
+--throw
+
+python $METAXCAN/Predict.py \
+--model_db_path $MODEL/Vo_best_prediXcan_db.db \
+--text_genotypes \
+ $GENO/chr*.round2_impute2_3473.txt  \
+--on_the_fly_mapping METADATA "{}_{}_{}_{}" \
+--text_sample_ids $GENO/samples_Rat_metab_phenos_file \
+--prediction_output $OUTPUT/rat_metabolic_Vo_best__predict.txt  \
+--prediction_summary_output $OUTPUT/rat_metabolic_Vo_best__summary.txt \
+--throw
+
 ```
 
 ## Association
@@ -37,7 +80,7 @@ python $METAXCAN/Predict.py \
 ```{r variables, eval=FALSE}
 library(readr)
 library(tidyverse)
-tis="Ac"
+tissues=c("Ac", "Il", "Lh", "Pl", "Vo")
 "%&%" = function(a,b) paste(a,b,sep="")
 dir="/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/"
 
@@ -46,29 +89,41 @@ dir="/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Ge
 Before running association, we filter predicted expression and phenotype files so that individuals are listed in the same order.
 
 ```{r, eval=FALSE}
-pred_expr <- read_tsv(dir %&% "Results/prediXcan/metabolic_traits/rat_metabolic_" %&% tis %&% "_best__predict.txt", col_names = TRUE)
-
+res.dir = dir %&% "Results/prediXcan/metabolic_traits/"
+meta.dir = "/Users/sabrinami/Github/MetaXcan/software"
 pheno.dir = dir %&% "data/expression/"
+
+fn_write_files = function(tis){
+  pred_expr <- read_tsv(dir %&% "Results/prediXcan/metabolic_traits/rat_metabolic_" %&% tis %&% "_best__predict.txt", col_names = TRUE)
 all_rats <- read_tsv(pheno.dir %&% "all_names.txt", col_names = TRUE)
-pred_expr <- pred_expr %>% filter(!(FID  %in% all_rats$ID))
-write_tsv(pred_expr, dir %&% "Results/prediXcan/metabolic_traits/rat_metabolic_" %&% tis %&% "_target_set__predict.txt", col_names = TRUE)
+  pred_expr <- pred_expr %>% filter(!(FID  %in% all_rats$ID))
+  write_tsv(pred_expr, dir %&% "Results/prediXcan/metabolic_traits/rat_metabolic_" %&% tis %&% "_target_set__predict.txt", col_names = TRUE)
+  pheno <- read_csv(pheno.dir %&% "processed_obesity_rat_Palmer_phenotypes.csv", col_names = TRUE) %>% filter(!(rat_rfid  %in% all_rats$ID))
+  write_tsv(pheno, pheno.dir %&% "processed_obesity_rat_Palmer_phenotypes_target_set.tsv", col_names = TRUE)
+
+}
+
+```
+
+```{r, eval=FALSE}
+for (tis in tissues) {
+  fn_write_files(tis)
+}
+
 ```
 
 Now run an association test for each column of our phenotype file.
 
 ```{r run associations, eval=FALSE}
-#run asssociation in prediXcan
-res.dir = dir %&% "Results/prediXcan/metabolic_traits/"
-meta.dir = "/Users/sabrinami/Github/MetaXcan/software"
-
-pheno <- read_csv(pheno.dir %&% "processed_obesity_rat_Palmer_phenotypes.csv", col_names = TRUE) %>% filter(!(rat_rfid  %in% all_rats$ID))
-write_tsv(pheno, pheno.dir %&% "processed_obesity_rat_Palmer_phenotypes_target_set.tsv", col_names = TRUE)
-
-# use all pheno columns except rat_rfid and idx
-n_pheno=length(colnames(pheno))-1
-for(i in 2:n_pheno){
-  trait <- colnames(pheno)[i]
-  runASSOC <- "python3 " %&% meta.dir %&% "/PrediXcanAssociation.py " %&% "--expression_file " %&% res.dir %&% "rat_metabolic_" %&% tis %&% "_target_set__predict.txt --input_phenos_file " %&% pheno.dir %&% "processed_obesity_rat_Palmer_phenotypes_target_set.tsv " %&% "--input_phenos_column " %&% trait %&%  " --output " %&% res.dir %&% tis %&% "__association_" %&% trait %&% ".txt --verbosity 9 --throw"
-  system(runASSOC)
+for (tis in tissues){
+  n_pheno=length(colnames(pheno))-1
+  # use all pheno columns except rat_rfid and idx
+  for(i in 2:n_pheno){
+    trait <- colnames(pheno)[i]
+    runASSOC <- "python3 " %&% meta.dir %&% "/PrediXcanAssociation.py " %&% "--expression_file " %&% res.dir %&% "rat_metabolic_" %&% tis %&% "_target_set__predict.txt --input_phenos_file " %&% pheno.dir %&% "processed_obesity_rat_Palmer_phenotypes_target_set.tsv " %&% "--input_phenos_column " %&% trait %&%  " --output " %&% res.dir %&% tis %&% "__association_" %&% trait %&% ".txt --verbosity 9 --throw"
+    system(runASSOC)
+  }
 }
+
+
 ```

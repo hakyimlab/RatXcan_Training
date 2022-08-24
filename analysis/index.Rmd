@@ -14,6 +14,7 @@ editor_options:
 2. [Run PrediXcan on rat genotypes](https://sabrina-mi.github.io/RatXcan_Training/Run_PrediXcan.html)
 3. [Analyze PrediXcan results](https://sabrina-mi.github.io/RatXcan_Training/Analyze_PrediXcan_Results.html)
 4. [Predict rat traits with PTRS](https://sabrina-mi.github.io/RatXcan_Training/Rat_PTRS.html)
-5. [Compare PTRS performance in rats and humans](https://sabrina-mi.github.io/RatXcan_Training/Plot_Correlations.html)
+5. [Compare PTRS performance in rats and humans](https://sabrina-mi.github.io/RatXcan_Training/Plot_PTRS_Correlations.html)
 6. [Estimate heritability and sparsity of rat genes with GEMMA (BSLMM)](https://sabrina-mi.github.io/RatXcan_Training/GEMMA_BSLMM.html)
+7. [Compare gene predictability and heritability between human and rat genes](https://sabrina-mi.github.io/RatXcan_Training/Plot_Predictability_Heritability.html)
 

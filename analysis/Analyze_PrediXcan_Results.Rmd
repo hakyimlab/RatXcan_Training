@@ -50,6 +50,40 @@ tempo_df %>% group_by(gene) %>% summarise(n = n())
 tempo_df %>% group_by(metabolic_trait) %>% summarise(n = n())
 ```
 
+For each trait, identify the tissue each gene is most significantly associated with and the sign of effect. We interpret the sign for the most significant association as the direction of effect on a given trait.
+
+```{r find mean Z, eval=FALSE}
+suppressMessages(library(Rfast))
+pheno <- read_csv(dir %&% "data/expression/processed_obesity_rat_Palmer_phenotypes.csv", col_names=TRUE)
+n_pheno = ncol(pheno) - 1
+for(i in 2:n_pheno) {
+  trait <- colnames(pheno)[i]
+  filelist <- list.files(dir %&% "Results/prediXcan/metabolic_traits", pattern = "association_" %&% trait %&% ".txt", full.names = TRUE)
+  tempo <- data.frame(gene= as.character())
+  for(file in filelist) {
+    tis <- str_match(file, "Results/prediXcan/metabolic_traits/(.*?)__association")[,2]
+    df <- suppressMessages(read_tsv(file)) %>% select(c(gene, effect, pvalue))
+    new_eff <- paste("effect", tis, sep = "_")
+    new_pval <- paste("pvalue", tis, sep = "_")
+    colnames(df)[2] <- new_eff
+    colnames(df)[3] <- new_pval 
+    
+    tempo <- full_join(tempo, df,  by = "gene")
+  }
+  # returns most significant tissue for each gene
+  most_sig = rowMins(as.matrix(tempo[,c(3,5,7,9,11)]))
+  Ac <- tempo[most_sig == 1, c(1,2)] %>% rename(effect = effect_Ac )
+  Il <- tempo[most_sig == 2, c(1,4)] %>% rename(effect = effect_Il )
+  Lh <- tempo[most_sig == 3, c(1,6)] %>% rename(effect = effect_Lh )
+  Pl <- tempo[most_sig == 4, c(1,8)] %>% rename(effect = effect_Pl )
+  Vo <- tempo[most_sig == 5, c(1,10)] %>% rename(effect = effect_Vo )
+  
+  df <- rbind(Ac, Il, Lh, Pl, Vo) 
+  df <- df %>% mutate(sign = sign(effect))
+  write_tsv(df, dir %&% "Results/prediXcan/metabolic_traits/most_sig_zscores/" %&% trait %&% "_avg_zscore.txt", col_names = FALSE)
+}
+```
+
 # Plot Association Results
 
 The `orth.rats` file gives a dictionary between human genes and the corresponding gene in rats, queried from the [Biomart database](https://lab-notes.hakyimlab.org/post/2022/06/28/query-gene-annotations-from-biomart/). 

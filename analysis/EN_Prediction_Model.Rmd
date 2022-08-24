@@ -14,7 +14,6 @@ library(devtools)
 # library(broom)
 library(data.table)
 
-
 base.dir = "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/"
 ```
 ## Process Genotype and Gene Expression data

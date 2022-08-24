@@ -11,9 +11,9 @@
 
 <meta name="author" content="sabrina-mi" />
 
-<meta name="date" content="2022-08-19" />
+<meta name="date" content="2022-08-23" />
 
-<title>Run PrediXcan</title>
+<title>Compare Gene Predictability and Heritability in Rat and Human Models</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -354,9 +354,10 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Run PrediXcan</h1>
+<h1 class="title toc-ignore">Compare Gene Predictability and
+Heritability in Rat and Human Models</h1>
 <h4 class="author">sabrina-mi</h4>
-<h4 class="date">2022-08-19</h4>
+<h4 class="date">2022-08-23</h4>
 
 </div>
 
@@ -423,10 +424,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -584,245 +585,215 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/Run_PrediXcan.Rmd</code>) and
-HTML (<code>docs/Run_PrediXcan.html</code>) files. If you’ve configured
-a remote Git repository (see <code>?wflow_git_remote</code>), click on
-the hyperlinks in the table below to view the files as they were in that
-past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/28edc16c4728d8ecc137f50cac32dcc4cb4926a6/analysis/Run_PrediXcan.Rmd" target="_blank">28edc16</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-22
-</td>
-<td>
-add link and change titles
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/28edc16c4728d8ecc137f50cac32dcc4cb4926a6/docs/Run_PrediXcan.html" target="_blank">28edc16</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-22
-</td>
-<td>
-add link and change titles
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b/analysis/Run_PrediXcan.Rmd" target="_blank">3902557</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-22
-</td>
-<td>
-add analyze predixcan result
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b/docs/Run_PrediXcan.html" target="_blank">3902557</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-22
-</td>
-<td>
-add analyze predixcan result
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/6e9507f7fb7392283002cf71abe3b55014df1d68/analysis/Run_PrediXcan.Rmd" target="_blank">6e9507f</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-22
-</td>
-<td>
-wflow_rename("analysis/PrediXcan.Rmd", "analysis/Run_PrediXcan.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/6e9507f7fb7392283002cf71abe3b55014df1d68/docs/Run_PrediXcan.html" target="_blank">6e9507f</a>
-</td>
-<td>
-sabrina-mi
-</td>
-<td>
-2022-08-22
-</td>
-<td>
-wflow_rename("analysis/PrediXcan.Rmd", "analysis/Run_PrediXcan.Rmd")
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<div id="predict" class="section level2">
-<h2>Predict</h2>
-<p>Predict gene expression using elastic net model trained on Ac tissue
-data.</p>
-<pre class="bash"><code>conda activate imlabtools
-# The path to Box drive is usually ~/Box, but may be different depending on operating system and Box Drive version
-DIR=/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline
-
-METAXCAN=/Users/sabrinami/Github/MetaXcan/software
-GENO=$DIR/data/rat_genotypes_LD_pruned_0.95
-MODEL=$DIR/Results/sql
-OUTPUT=$DIR/Results/PrediXcan/metabolic_traits</code></pre>
-<pre class="bash"><code>python $METAXCAN/Predict.py \
---model_db_path $MODEL/Ac_best_prediXcan_db.db \
---text_genotypes \
- $GENO/chr*.round2_impute2_3473.txt  \
---on_the_fly_mapping METADATA &quot;{}_{}_{}_{}&quot; \
---text_sample_ids $GENO/samples_Rat_metab_phenos_file \
---prediction_output $OUTPUT/rat_metabolic_Ac_best__predict.txt  \
---prediction_summary_output $OUTPUT/rat_metabolic_Ac_best__summary.txt \
---throw
-
-python $METAXCAN/Predict.py \
---model_db_path $MODEL/Il_best_prediXcan_db.db \
---text_genotypes \
- $GENO/chr*.round2_impute2_3473.txt  \
---on_the_fly_mapping METADATA &quot;{}_{}_{}_{}&quot; \
---text_sample_ids $GENO/samples_Rat_metab_phenos_file \
---prediction_output $OUTPUT/rat_metabolic_Il_best__predict.txt  \
---prediction_summary_output $OUTPUT/rat_metabolic_Il_best__summary.txt \
---throw
-
-python $METAXCAN/Predict.py \
---model_db_path $MODEL/Lh_best_prediXcan_db.db \
---text_genotypes \
- $GENO/chr*.round2_impute2_3473.txt  \
---on_the_fly_mapping METADATA &quot;{}_{}_{}_{}&quot; \
---text_sample_ids $GENO/samples_Rat_metab_phenos_file \
---prediction_output $OUTPUT/rat_metabolic_Lh_best__predict.txt  \
---prediction_summary_output $OUTPUT/rat_metabolic_Lh_best__summary.txt \
---throw
-
-python $METAXCAN/Predict.py \
---model_db_path $MODEL/Pl_best_prediXcan_db.db \
---text_genotypes \
- $GENO/chr*.round2_impute2_3473.txt  \
---on_the_fly_mapping METADATA &quot;{}_{}_{}_{}&quot; \
---text_sample_ids $GENO/samples_Rat_metab_phenos_file \
---prediction_output $OUTPUT/rat_metabolic_Pl_best__predict.txt  \
---prediction_summary_output $OUTPUT/rat_metabolic_Pl_best__summary.txt \
---throw
-
-python $METAXCAN/Predict.py \
---model_db_path $MODEL/Vo_best_prediXcan_db.db \
---text_genotypes \
- $GENO/chr*.round2_impute2_3473.txt  \
---on_the_fly_mapping METADATA &quot;{}_{}_{}_{}&quot; \
---text_sample_ids $GENO/samples_Rat_metab_phenos_file \
---prediction_output $OUTPUT/rat_metabolic_Vo_best__predict.txt  \
---prediction_summary_output $OUTPUT/rat_metabolic_Vo_best__summary.txt \
---throw
-</code></pre>
-</div>
-<div id="association" class="section level2">
-<h2>Association</h2>
-<pre class="r"><code>library(readr)
-library(tidyverse)
-tissues=c(&quot;Ac&quot;, &quot;Il&quot;, &quot;Lh&quot;, &quot;Pl&quot;, &quot;Vo&quot;)
+<p>Previously, we computed heritability (h2) estimates for rat genes
+using <a
+href="https://sabrina-mi.github.io/RatXcan_Training/GEMMA_BSLMM.html">GEMMA</a>.
+And our PredictDB pipeline computes predictive performance (R2) for each
+gene when training the EN model. Now we compare it to heritability and
+predictability estimates for human genes generated by <a
+href="https://github.com/hakyimlab/GenArchDB">Wheeler Lab</a>.</p>
+<p>The sqlite database <a
+href="https://github.com/hakyimlab/GenArchDB/blob/master/genarch.db"><code>genarch.db</code></a>
+contains all results from Wheeler Lab’s multi-tissue analysis of GTEx
+data. We queried R2 and h2 values and stored them in
+<code>human_h2.csv</code>.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.0.4     ✔ dplyr   1.0.2
+✔ tidyr   1.1.2     ✔ stringr 1.4.0
+✔ readr   1.4.0     ✔ forcats 0.5.0</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(RSQLite)
 &quot;%&amp;%&quot; = function(a,b) paste(a,b,sep=&quot;&quot;)
-dir=&quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/&quot;</code></pre>
-<p>Before running association, we filter predicted expression and
-phenotype files so that individuals are listed in the same order.</p>
-<pre class="r"><code>res.dir = dir %&amp;% &quot;Results/prediXcan/metabolic_traits/&quot;
-meta.dir = &quot;/Users/sabrinami/Github/MetaXcan/software&quot;
-pheno.dir = dir %&amp;% &quot;data/expression/&quot;
+dir = &quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/&quot;</code></pre>
+<p>We first read in heritability estimes for humans and rats, and output
+their summary.</p>
+<pre class="r"><code>rat_h2 &lt;- suppressMessages(read_tsv(dir %&amp;% &quot;GEMMA/Ac/Ac_PVE_estimates.txt&quot;, col_names = FALSE)) %&gt;% dplyr::rename(rat_herit = X2)
 
-fn_write_files = function(tis){
-  pred_expr &lt;- read_tsv(dir %&amp;% &quot;Results/prediXcan/metabolic_traits/rat_metabolic_&quot; %&amp;% tis %&amp;% &quot;_best__predict.txt&quot;, col_names = TRUE)
-all_rats &lt;- read_tsv(pheno.dir %&amp;% &quot;all_names.txt&quot;, col_names = TRUE)
-  pred_expr &lt;- pred_expr %&gt;% filter(!(FID  %in% all_rats$ID))
-  write_tsv(pred_expr, dir %&amp;% &quot;Results/prediXcan/metabolic_traits/rat_metabolic_&quot; %&amp;% tis %&amp;% &quot;_target_set__predict.txt&quot;, col_names = TRUE)
-  pheno &lt;- read_csv(pheno.dir %&amp;% &quot;processed_obesity_rat_Palmer_phenotypes.csv&quot;, col_names = TRUE) %&gt;% filter(!(rat_rfid  %in% all_rats$ID))
-  write_tsv(pheno, pheno.dir %&amp;% &quot;processed_obesity_rat_Palmer_phenotypes_target_set.tsv&quot;, col_names = TRUE)
+human_h2_file = dir %&amp;% &quot;data/genarch.db&quot;
+sqlite.driver &lt;- dbDriver(&quot;SQLite&quot;)
+conn &lt;- dbConnect(RSQLite::SQLite(), human_h2_file)
+human_h2 &lt;- dbGetQuery(conn, &quot;select gene, ensid, en_r2 ,h2,h2_ci from results where tissue = &#39;DGN-WB&#39;&quot;)</code></pre>
+<pre><code>Warning in result_fetch(res@ptr, n = n): Column `en_r2`: mixed type, first seen
+values of type real, coercing other values of type string</code></pre>
+<pre class="r"><code>dbDisconnect(conn)
+#remove ensembl version
+human_h2$ensid &lt;- sapply(strsplit(human_h2$ensid, &quot;\\.&quot;), `[`, 1)
+print(&quot;Distribution of Rat Gene Heritability&quot;)</code></pre>
+<pre><code>[1] &quot;Distribution of Rat Gene Heritability&quot;</code></pre>
+<pre class="r"><code>summary(rat_h2$rat_herit)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+0.02234 0.04492 0.06520 0.09822 0.11071 0.79924      58 </code></pre>
+<pre class="r"><code>print(&quot;Distribution of Human Gene Heritability&quot;)</code></pre>
+<pre><code>[1] &quot;Distribution of Human Gene Heritability&quot;</code></pre>
+<pre class="r"><code>summary(human_h2$h2)</code></pre>
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+0.000001 0.014847 0.057980 0.126364 0.173627 0.933770 </code></pre>
+<p>Use the rat-human gene dictionary to join the two tables, and
+calculate the correlation of heritability for rats and humans.</p>
+<pre class="r"><code>orth.rats &lt;- read_tsv(dir %&amp;% &quot;data/expression/ortholog_genes_rats_humans.tsv&quot;)</code></pre>
+<pre><code>
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  ensembl_gene_id = col_character(),
+  external_gene_name = col_character(),
+  rnorvegicus_homolog_ensembl_gene = col_character(),
+  rnorvegicus_homolog_associated_gene_name = col_character()
+)</code></pre>
+<pre class="r"><code>rat_h2 &lt;- rat_h2 %&gt;% mutate(ensid = orth.rats[match(rat_h2$X1, orth.rats$rnorvegicus_homolog_ensembl_gene), 1]$ensembl_gene_id)
 
+all_h2 &lt;- inner_join(rat_h2, human_h2, by = &quot;ensid&quot;)
+
+cor.test(all_h2$rat_herit, all_h2$h2)</code></pre>
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  all_h2$rat_herit and all_h2$h2
+t = 6.9336, df = 10531, p-value = 4.344e-12
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.04837588 0.08639778
+sample estimates:
+      cor 
+0.0674113 </code></pre>
+<p>Repeat for predictability.</p>
+<pre class="r"><code>file &lt;- dir %&amp;% &quot;Results/sql/Ac_output_db.db&quot;
+conn &lt;- dbConnect(RSQLite::SQLite(), file)
+rat_r2 &lt;- dbGetQuery(conn, &#39;select * from extra&#39;)
+dbDisconnect(conn)
+
+rat_r2 &lt;- rat_r2 %&gt;% mutate(ensid = orth.rats[match(rat_r2$gene, orth.rats$rnorvegicus_homolog_ensembl_gene), 1]$ensembl_gene_id)
+all_r2 &lt;- inner_join(rat_r2, human_h2, by = &quot;ensid&quot;)
+cor.test(all_r2$R2, all_r2$en_r2)</code></pre>
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  all_r2$R2 and all_r2$en_r2
+t = 4.5828, df = 6068, p-value = 4.681e-06
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.03362123 0.08376302
+sample estimates:
+       cor 
+0.05872917 </code></pre>
+<pre class="r"><code>Ac_h2 &lt;- rat_h2 %&gt;% dplyr::rename(gene.x = X1) %&gt;% mutate(rat_ci = paste(round(rat_h2$X3, digits = 5), round(rat_h2$X4, digits = 5), sep = &quot;-&quot;)) %&gt;% dplyr::select(c(gene.x, rat_herit, rat_ci))
+
+lg_df &lt;- inner_join(all_r2, Ac_h2, by = &quot;gene.x&quot;)
+
+lg_df &lt;- lg_df %&gt;% dplyr::select(c(ensid, gene.x, genename, R2, en_r2,rat_herit,h2,  rat_ci, h2_ci))
+colnames(lg_df) = c(&quot;ensembl_id&quot;, &quot;rat_ensembl_id&quot;, &quot;genename&quot;, &quot;rat_r2&quot;, &quot;human_r2&quot;, &quot;rat_h2&quot;, &quot;human_h2&quot;, &quot;rat_h2_ci&quot;, &quot;human_h2_ci&quot;)</code></pre>
+<p>Here we plot rat heritability against human heritability.</p>
+<pre class="r"><code># Plot h2 between rats and Humans with line for null 
+lg_df %&gt;% mutate(human_shuffled_h2 = sample(human_h2, nrow(lg_df), replace=F)) %&gt;% ggplot(aes(rat_h2, human_h2)) + geom_smooth(col = &quot;darkgreen&quot;) + geom_smooth(aes(rat_h2, human_shuffled_h2),col=&quot;dark gray&quot;)+theme_bw()+ xlab(&quot;Rat Heritability&quot;) + ylab(&quot;Human Heritability&quot;)</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;
+`geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="figure/Plot_Predictability_Heritability.Rmd/h2%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>And repeat for predictability.</p>
+<pre class="r"><code># Plot R2 between rats and Humans with line for null 
+lg_df %&gt;% mutate(human_shuffled_r2 = sample(human_r2, nrow(lg_df), replace=F)) %&gt;% ggplot(aes(rat_r2, human_r2)) + geom_smooth(col = &quot;midnightblue&quot;) + xlab(&quot;Rat Predictability&quot;) + ylab(&quot;Human Predictability&quot;)</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="figure/Plot_Predictability_Heritability.Rmd/R2%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Plot correlation between predictability for every pair of
+tissues.</p>
+<pre class="r"><code>model.dir &lt;- dir %&amp;% &quot;Results/sql/&quot;
+filelist &lt;- c(&quot;Il_output_db.db&quot;, &quot;Lh_output_db.db&quot;, &quot;Ac_output_db.db&quot;, &quot;Vo_output_db.db&quot;, &quot;Pl_output_db.db&quot;)
+tis.list &lt;- c(&quot;Infralimbic Cortex&quot;, &quot;Lateral Habenula&quot;, &quot;Nucleus accumbens&quot;, &quot;Orbitofrontal Cortex&quot;, &quot;Prelimibic Cortex&quot;)
+
+pred_tis &lt;- data.frame(gene = as.character())
+for(file in filelist) {
+  filename &lt;- model.dir %&amp;% file
+  print(filename)
+  conn &lt;- dbConnect(RSQLite::SQLite(), filename)
+  i &lt;- match(file, filelist)
+  tis &lt;- tis.list[i]
+  extra &lt;- dbGetQuery(conn, &#39;select * from extra&#39;) %&gt;% select(c(gene, R2)) 
+  colnames(extra)[2] = tis
+  pred_tis &lt;- full_join(pred_tis, extra, by = &quot;gene&quot;) 
+  dbDisconnect(conn)
 }</code></pre>
-<pre class="r"><code>for (tis in tissues) {
-  fn_write_files(tis)
-}</code></pre>
-<p>Now run an association test for each column of our phenotype
-file.</p>
-<pre class="r"><code>for (tis in tissues){
-  n_pheno=length(colnames(pheno))-1
-  # use all pheno columns except rat_rfid and idx
-  for(i in 2:n_pheno){
-    trait &lt;- colnames(pheno)[i]
-    runASSOC &lt;- &quot;python3 &quot; %&amp;% meta.dir %&amp;% &quot;/PrediXcanAssociation.py &quot; %&amp;% &quot;--expression_file &quot; %&amp;% res.dir %&amp;% &quot;rat_metabolic_&quot; %&amp;% tis %&amp;% &quot;_target_set__predict.txt --input_phenos_file &quot; %&amp;% pheno.dir %&amp;% &quot;processed_obesity_rat_Palmer_phenotypes_target_set.tsv &quot; %&amp;% &quot;--input_phenos_column &quot; %&amp;% trait %&amp;%  &quot; --output &quot; %&amp;% res.dir %&amp;% tis %&amp;% &quot;__association_&quot; %&amp;% trait %&amp;% &quot;.txt --verbosity 9 --throw&quot;
-    system(runASSOC)
-  }
-}</code></pre>
+<pre><code>[1] &quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql/Il_output_db.db&quot;
+[1] &quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql/Lh_output_db.db&quot;
+[1] &quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql/Ac_output_db.db&quot;
+[1] &quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql/Vo_output_db.db&quot;
+[1] &quot;/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/Results/sql/Pl_output_db.db&quot;</code></pre>
+<pre class="r"><code>rownames(pred_tis) &lt;- pred_tis$gene
+pred_tis &lt;- pred_tis %&gt;% select(-c(gene))
+
+
+d1 &lt;- cor(pred_tis %&gt;% na.omit)
+d1[lower.tri(d1)] &lt;- NA
+d1 &lt;- d1 %&gt;%
+  as.data.frame %&gt;%
+  rownames_to_column(var = &#39;var1&#39;) %&gt;%
+  gather(var2, value, -var1) 
+d1 &lt;- d1 %&gt;% dplyr::rename(r = value) %&gt;% na.omit() 
+
+
+ggplot(data = d1, aes(x = var1, y = var2, fill = r)) +
+ geom_tile(color = &quot;white&quot;)+
+ scale_fill_gradient(low=&quot;dodgerblue&quot;, high=&quot;dodgerblue4&quot;) +
+  theme_minimal() +
+  theme(panel.grid = element_blank()) + ylab(&quot;&quot;) + xlab(&quot;&quot;) + theme(axis.text = element_text(size = 15), axis.text.x = element_text(angle = 90, hjust = 1)) + theme(aspect.ratio=1)   </code></pre>
+<p><img src="figure/Plot_Predictability_Heritability.Rmd/compare%20predictability%20between%20rat%20tissue-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Repeat for analogous GTEx tissues. These EN models can be downloaded
+from <a
+href="https://zenodo.org/record/3519321/files/elastic_net_eqtl.tar?download=1">PredictDB</a>.</p>
+<pre class="r"><code>model.dir &lt;- &quot;~/elastic_net_models/&quot;
+tis.list = c(&quot;Amygdala&quot;, &quot;Cerebellum&quot;, &quot;Nucleus accumbens&quot;,  &quot;Spinal cord&quot;, &quot;Substantia nigra&quot;)
+filelist &lt;- c(&quot;en_Brain_Amygdala.db&quot;, &quot;en_Brain_Cerebellum.db&quot;, &quot;en_Brain_Nucleus_accumbens_basal_ganglia.db&quot;, &quot;en_Brain_Spinal_cord_cervical_c-1.db&quot;, &quot;en_Brain_Substantia_nigra.db&quot;)</code></pre>
+<pre class="r"><code>pred_tis &lt;- data.frame(gene = as.character())
+for(file in filelist) {
+  filename &lt;- model.dir %&amp;% file
+  conn &lt;- dbConnect(RSQLite::SQLite(), filename)
+  i &lt;- match(file, filelist)
+  tis &lt;- tis.list[i]
+  extra &lt;- dbGetQuery(conn, &#39;select * from extra&#39;) %&gt;% select(c(gene, pred.perf.R2)) 
+  colnames(extra)[2] = tis
+  pred_tis &lt;- full_join(pred_tis, extra, by = &quot;gene&quot;) 
+  dbDisconnect(conn)
+}
+rownames(pred_tis) &lt;- pred_tis$gene
+pred_tis &lt;- pred_tis %&gt;% select(-c(gene))
+
+d2 &lt;- cor(pred_tis %&gt;% na.omit)
+d2[lower.tri(d2)] &lt;- NA
+d2 &lt;- d2 %&gt;%
+  as.data.frame %&gt;%
+  rownames_to_column(var = &#39;var1&#39;) %&gt;%
+  gather(var2, value, -var1) 
+d2 &lt;- d2 %&gt;% dplyr::rename(r = value) %&gt;% na.omit()
+
+ggplot(data = d2, aes(x = var1, y = var2, fill = r)) +
+ geom_tile(color = &quot;white&quot;)+
+ scale_fill_gradient(low=&quot;maroon1&quot;, high=&quot;maroon4&quot;) +
+  theme_minimal() +
+  theme(panel.grid = element_blank()) + ylab(&quot;&quot;) + xlab(&quot;&quot;) + theme(axis.text = element_text(size = 15), axis.text.x = element_text(angle = 90, hjust = 1)) + theme(aspect.ratio=1)   </code></pre>
+<p><img src="figure/Plot_Predictability_Heritability.Rmd/plot%20R2%20across%20GTEx%20tissues-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Compare number of SNPs used in prediction model for rats and
+humans.</p>
+<pre class="r"><code>summary(rat_r2$n.snps)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.00    5.00    9.00   11.93   16.00   77.00 </code></pre>
+<pre class="r"><code>#human NAcc models
+filename &lt;- &quot;~/elastic_net_models/en_Brain_Nucleus_accumbens_basal_ganglia.db&quot;
+sqlite.driver &lt;- dbDriver(&quot;SQLite&quot;)
+conn &lt;- dbConnect(RSQLite::SQLite(), filename)
+human_r2 &lt;- dbGetQuery(conn, &#39;select * from extra&#39;) 
+
+summary(human_r2$n.snps.in.model)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.00   13.00   24.00   31.08   42.00  226.00 </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -846,18 +817,30 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
+other attached packages:
+ [1] RSQLite_2.2.1   forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [5] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.4   
+ [9] ggplot2_3.3.6   tidyverse_1.3.0
+
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8.3     rstudioapi_0.11  whisker_0.4      knitr_1.39      
- [5] magrittr_1.5     workflowr_1.6.2  R6_2.4.1         rlang_1.0.2     
- [9] fastmap_1.1.0    stringr_1.4.0    tools_4.0.3      xfun_0.31       
-[13] cli_3.3.0        git2r_0.27.1     jquerylib_0.1.4  htmltools_0.5.2 
-[17] ellipsis_0.3.2   rprojroot_1.3-2  yaml_2.2.1       digest_0.6.27   
-[21] tibble_3.0.4     lifecycle_0.2.0  crayon_1.3.4     later_1.1.0.1   
-[25] sass_0.4.1       vctrs_0.4.1      fs_1.5.0         promises_1.1.1  
-[29] glue_1.6.2       evaluate_0.15    rmarkdown_2.14   stringi_1.5.3   
-[33] compiler_4.0.3   bslib_0.3.1      pillar_1.4.6     backports_1.1.10
-[37] jsonlite_1.7.1   httpuv_1.5.4     pkgconfig_2.0.3 </code></pre>
-</div>
+ [1] Rcpp_1.0.8.3     lattice_0.20-41  lubridate_1.7.9  assertthat_0.2.1
+ [5] rprojroot_1.3-2  digest_0.6.27    R6_2.4.1         cellranger_1.1.0
+ [9] backports_1.1.10 reprex_0.3.0     evaluate_0.15    highr_0.8       
+[13] httr_1.4.2       pillar_1.4.6     rlang_1.0.2      readxl_1.3.1    
+[17] rstudioapi_0.11  jquerylib_0.1.4  blob_1.2.1       Matrix_1.2-18   
+[21] rmarkdown_2.14   labeling_0.4.2   splines_4.0.3    bit_4.0.4       
+[25] munsell_0.5.0    broom_0.8.0      compiler_4.0.3   httpuv_1.5.4    
+[29] modelr_0.1.8     xfun_0.31        pkgconfig_2.0.3  mgcv_1.8-33     
+[33] htmltools_0.5.2  tidyselect_1.1.0 workflowr_1.6.2  crayon_1.3.4    
+[37] dbplyr_1.4.4     withr_2.3.0      later_1.1.0.1    grid_4.0.3      
+[41] nlme_3.1-150     jsonlite_1.7.1   gtable_0.3.0     lifecycle_0.2.0 
+[45] DBI_1.1.0        git2r_0.27.1     magrittr_1.5     scales_1.1.1    
+[49] cli_3.3.0        stringi_1.5.3    farver_2.0.3     fs_1.5.0        
+[53] promises_1.1.1   xml2_1.3.2       bslib_0.3.1      ellipsis_0.3.2  
+[57] generics_0.0.2   vctrs_0.4.1      tools_4.0.3      bit64_4.0.5     
+[61] glue_1.6.2       hms_1.1.2        fastmap_1.1.0    yaml_2.2.1      
+[65] colorspace_1.4-1 rvest_0.3.6      memoise_1.1.0    knitr_1.39      
+[69] haven_2.3.1      sass_0.4.1      </code></pre>
 </div>
 
 
