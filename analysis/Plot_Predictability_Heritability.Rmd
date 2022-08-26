@@ -13,7 +13,7 @@ Now we compare it to heritability and predictability estimates for human genes g
 The sqlite database [`genarch.db`](https://github.com/hakyimlab/GenArchDB/blob/master/genarch.db) contains all results from Wheeler Lab's multi-tissue analysis of GTEx data. We queried R2 and h2 values and stored them in `human_h2.csv`.
 
 ```{r definitions}
-library(tidyverse)
+suppressMessages(library(tidyverse))
 library(RSQLite)
 "%&%" = function(a,b) paste(a,b,sep="")
 dir = "/Users/sabrinami/Library/CloudStorage/Box-Box/imlab-data/data-Github/Rat_Genomics_Paper_Pipeline/"

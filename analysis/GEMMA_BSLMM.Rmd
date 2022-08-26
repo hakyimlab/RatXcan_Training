@@ -16,20 +16,48 @@ library(tidyverse)
 # rat tissues
 tissues = c("Ac", "Il", "Lh", "Pl", "Vo")
 
+# Path to directory with genotype, gene expression, and phyMap files
+data.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/"
 # Create new directory for GEMMA inputs and outputs
-base.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/"
+base.dir <- "gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/"
 # path to write bimbam files
-bim.dir <- "/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/"
+bim.dir <- "gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/bimbam"
 
 ```
-
 
 ## Format Genotype Data
 
 The "bimbam" file we are writing does not exactly follow the BIMBAM mean genotype file format, but it contains all the necessary information to create subseted BIMBAM files for estimating the genetic relatedness matrix (GRM).
-```{r format genotypes, eval=FALSE}
-load("~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData")
 
+The function below expects a snp annotation, genotype, and gene expression table. Ours were loaded directly from `Data-From-Abe-Palmer-Lab/Rdata/genoGex.Rdata`.
+
+The snp annotation table, `phyMap`, should be a dataframe `SNP`, `Chr`, `Pos`, `Ref`, `Alt` as columns. 
+```
+            SNP Chr     Pos Ref Alt
+1    chr1:55365   1   55365   A   T
+8   chr1:759319   1  759319   T   C
+9  chr1:1134030   1 1134030   A   G
+```
+
+The genotypes, `geno`, should be a matrix with individuals as column names.
+```
+     0007A0008B 0007A00024 0007A000DB 0007A001C5 0007A0059F 0007A00263
+[1,]          2          2          2          2          2          2
+[2,]          1          0          1          0          1          1
+[3,]          2          2          2          1          2          2
+
+```
+
+The gene expression file should be a dataframe with ensemble IDs in the first column and individuals as the remaining column names.
+```
+       EnsemblGeneID 00077E67B5 00077E8336 00077EA7E6 000789FF7D 00078A0041
+2 ENSRNOG00000000007     207.78     208.71     240.37     244.36     241.34
+5 ENSRNOG00000000010       0.13       0.83       0.52       0.27       0.14
+6 ENSRNOG00000000012       0.91       2.19       1.17       0.28       1.01
+
+```
+
+```{r format genotypes, eval=FALSE}
 fn_write_bimbam = function(tis){
   bimfile <- bim.dir %&% tis %&% "_bimbam"
 

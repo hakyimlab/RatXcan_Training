@@ -385,7 +385,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-08-22
+<strong>Last updated:</strong> 2022-08-26
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree3902557023b0fb85bef5d0a7c5f1bcbdc0d8292btargetblank3902557a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtreeea180ba78af84a225af7bd943be1aab4dde4844etargetblankea180baa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b" target="_blank">3902557</a>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/ea180ba78af84a225af7bd943be1aab4dde4844e" target="_blank">ea180ba</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtree3902557023b0fb85bef5d0a7c5f1bcbdc0d8292btargetblank3902557a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsabrinamiRatXcanTrainingtreeea180ba78af84a225af7bd943be1aab4dde4844etargetblankea180baa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/3902557023b0fb85bef5d0a7c5f1bcbdc0d8292b" target="_blank">3902557</a>.
+<a href="https://github.com/sabrina-mi/RatXcan_Training/tree/ea180ba78af84a225af7bd943be1aab4dde4844e" target="_blank">ea180ba</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -561,14 +561,13 @@ Ignored files:
 Untracked files:
     Untracked:  .DS_Store
     Untracked:  .gitignore
+    Untracked:  code/helpers.R
 
 Unstaged changes:
-    Modified:   analysis/Analyze_PrediXcan_Results.Rmd
-    Modified:   analysis/EN_Prediction_Model.Rmd
+    Modified:   analysis/.DS_Store
     Modified:   analysis/GEMMA_BSLMM.Rmd
-    Modified:   analysis/Plot_Correlations.Rmd
-    Modified:   analysis/Run_PrediXcan.Rmd
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/Plot_Predictability_Heritability.Rmd
+    Modified:   code/.DS_Store
 
 </code></pre>
 <p>
@@ -614,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/sabrina-mi/RatXcan_Training/blob/28edc16c4728d8ecc137f50cac32dcc4cb4926a6/analysis/GEMMA_BSLMM.Rmd" target="_blank">28edc16</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-22
+</td>
+<td>
+add link and change titles
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sabrina-mi/RatXcan_Training/28edc16c4728d8ecc137f50cac32dcc4cb4926a6/docs/GEMMA_BSLMM.html" target="_blank">28edc16</a>
+</td>
+<td>
+sabrina-mi
+</td>
+<td>
+2022-08-22
+</td>
+<td>
+add link and change titles
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -751,19 +784,43 @@ expression, and an estimated relatedness matrix as input.</p>
 # rat tissues
 tissues = c(&quot;Ac&quot;, &quot;Il&quot;, &quot;Lh&quot;, &quot;Pl&quot;, &quot;Vo&quot;)
 
+# Path to directory with genotype, gene expression, and phyMap files
+data.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/&quot;
 # Create new directory for GEMMA inputs and outputs
-base.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/GEMMA/&quot;
+base.dir &lt;- &quot;gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/&quot;
 # path to write bimbam files
-bim.dir &lt;- &quot;/Users/sabrinami/Github/Rat_Genomics_Paper_Pipeline/data/bimbam/&quot;</code></pre>
+bim.dir &lt;- &quot;gpfs/data/im-lab/nas40t2/natasha/rat_genomics/GEMMA/bimbam&quot;</code></pre>
 <div id="format-genotype-data" class="section level2">
 <h2>Format Genotype Data</h2>
 <p>The “bimbam” file we are writing does not exactly follow the BIMBAM
 mean genotype file format, but it contains all the necessary information
 to create subseted BIMBAM files for estimating the genetic relatedness
 matrix (GRM).</p>
-<pre class="r"><code>load(&quot;~/Box/imlab-data/Projects/PTRS-PGRS-Rosetta/Data-From-Abe-Palmer-Lab/Rdata/genoGex.RData&quot;)
-
-fn_write_bimbam = function(tis){
+<p>The function below expects a snp annotation, genotype, and gene
+expression table. Ours were loaded directly from
+<code>Data-From-Abe-Palmer-Lab/Rdata/genoGex.Rdata</code>.</p>
+<p>The snp annotation table, <code>phyMap</code>, should be a dataframe
+<code>SNP</code>, <code>Chr</code>, <code>Pos</code>, <code>Ref</code>,
+<code>Alt</code> as columns.</p>
+<pre><code>            SNP Chr     Pos Ref Alt
+1    chr1:55365   1   55365   A   T
+8   chr1:759319   1  759319   T   C
+9  chr1:1134030   1 1134030   A   G</code></pre>
+<p>The genotypes, <code>geno</code>, should be a matrix with individuals
+as column names.</p>
+<pre><code>     0007A0008B 0007A00024 0007A000DB 0007A001C5 0007A0059F 0007A00263
+[1,]          2          2          2          2          2          2
+[2,]          1          0          1          0          1          1
+[3,]          2          2          2          1          2          2
+</code></pre>
+<p>The gene expression file should be a dataframe with ensemble IDs in
+the first column and individuals as the remaining column names.</p>
+<pre><code>       EnsemblGeneID 00077E67B5 00077E8336 00077EA7E6 000789FF7D 00078A0041
+2 ENSRNOG00000000007     207.78     208.71     240.37     244.36     241.34
+5 ENSRNOG00000000010       0.13       0.83       0.52       0.27       0.14
+6 ENSRNOG00000000012       0.91       2.19       1.17       0.28       1.01
+</code></pre>
+<pre class="r"><code>fn_write_bimbam = function(tis){
   bimfile &lt;- bim.dir %&amp;% tis %&amp;% &quot;_bimbam&quot;
 
 # allows us to call gene expression table for each tissue without hard coding
